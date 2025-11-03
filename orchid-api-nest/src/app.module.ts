@@ -18,6 +18,4 @@ import { LikeModule } from './like/like.module';
   controllers: [AppController],
   providers: [AppService],
 })
-// dfasfasfsasdfasdfasfsadfs
-// loloassfdadfasdfasf
 export class AppModule {}
