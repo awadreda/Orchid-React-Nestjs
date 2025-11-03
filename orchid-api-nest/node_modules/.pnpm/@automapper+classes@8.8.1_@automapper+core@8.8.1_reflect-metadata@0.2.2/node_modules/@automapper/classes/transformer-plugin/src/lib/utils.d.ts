@@ -1,0 +1,6 @@
+import { Decorator, Type, TypeChecker, TypeNode } from 'typescript/lib/tsserverlibrary';
+export declare function isFilenameMatched(patterns: string[], filename: string): boolean;
+export declare function isNullableUnionType(type: Type): boolean;
+export declare function getDecoratorOrUndefinedByNames(names: string[], decorators?: readonly Decorator[]): Decorator | undefined;
+export declare function getTypeReference(type: Type, typeNode: TypeNode, typeChecker: TypeChecker, isArray?: boolean): [elementType: string | undefined, isArray: boolean];
+export declare function replaceImportPath(typeReference: string, fileName: string): string | undefined;

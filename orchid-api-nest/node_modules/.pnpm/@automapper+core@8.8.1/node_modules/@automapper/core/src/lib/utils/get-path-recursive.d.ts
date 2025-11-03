@@ -1,0 +1,1 @@
+export declare function getPathRecursive(node: Record<string, unknown>, prefix?: string[], previous?: string[][]): string[][];

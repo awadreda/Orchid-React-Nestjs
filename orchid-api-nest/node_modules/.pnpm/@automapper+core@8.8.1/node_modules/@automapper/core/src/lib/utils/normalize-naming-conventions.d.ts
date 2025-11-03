@@ -1,0 +1,2 @@
+import type { NamingConvention, NamingConventionInput } from '../types';
+export declare function normalizeNamingConventions(namingConventions: NamingConventionInput): [NamingConvention, NamingConvention];

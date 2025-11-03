@@ -1,0 +1,1 @@
+export declare const InjectMapper: (name?: string) => PropertyDecorator & ParameterDecorator;

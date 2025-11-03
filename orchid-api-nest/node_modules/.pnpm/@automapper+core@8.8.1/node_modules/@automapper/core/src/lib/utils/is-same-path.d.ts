@@ -1,0 +1,1 @@
+export declare function isSamePath(target: string[], value: string[]): boolean;

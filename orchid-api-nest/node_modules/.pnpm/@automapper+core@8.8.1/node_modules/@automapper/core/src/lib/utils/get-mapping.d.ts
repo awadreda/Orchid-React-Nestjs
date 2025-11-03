@@ -1,0 +1,2 @@
+import type { Mapper, Mapping, ModelIdentifier } from '../types';
+export declare function getMapping(mapper: Mapper, source: ModelIdentifier, destination: ModelIdentifier, allowNull?: boolean): Mapping;

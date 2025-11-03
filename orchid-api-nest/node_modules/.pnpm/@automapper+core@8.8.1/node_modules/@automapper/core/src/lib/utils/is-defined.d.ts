@@ -1,0 +1,1 @@
+export declare function isDefined(value: unknown, strict?: boolean): boolean;
