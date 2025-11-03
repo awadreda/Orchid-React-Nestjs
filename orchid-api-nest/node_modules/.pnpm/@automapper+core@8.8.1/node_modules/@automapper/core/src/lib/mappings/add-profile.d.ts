@@ -1,2 +1,0 @@
-import type { Mapper, MappingConfiguration, MappingProfile } from '../types';
-export declare function addProfile(mapper: Mapper, profile: MappingProfile, ...mappingConfigurations: MappingConfiguration[]): void;

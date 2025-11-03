@@ -1,1 +1,0 @@
-export declare function isPrimitiveArrayEqual(a: (string | number | boolean)[], b: (string | number | boolean)[]): boolean;

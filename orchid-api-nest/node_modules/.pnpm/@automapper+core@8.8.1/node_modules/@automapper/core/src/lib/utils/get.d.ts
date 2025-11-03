@@ -1,1 +1,0 @@
-export declare function get<T>(object: T, path?: (string | symbol)[]): unknown;
