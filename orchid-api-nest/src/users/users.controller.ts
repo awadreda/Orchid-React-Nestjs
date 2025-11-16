@@ -7,6 +7,9 @@ import {
   Param,
   Delete,
   Put,
+  HttpCode,
+  Res,
+  HttpStatus,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -17,7 +20,7 @@ import { UserResponseDto } from './dto/user-response.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get()
+  @Get("allusers")
   async GetAllUsers() : Promise<UserResponseDto[] | { message: string }> {
     const users = await this.usersService.getUsers();
 
@@ -50,7 +53,9 @@ export class UsersController {
 
 
       @Post('createuser')
-    async CreateUser(@Body() createUserDto: CreateUserDto): Promise<UserResponseDto | { message: string }>{
+      @HttpCode(201)
+
+    async CreateUser( @Body() createUserDto: CreateUserDto): Promise<UserResponseDto | { message: string }>{
         const user = await this.usersService.createUser(createUserDto);
         if(!user){
             return { message: 'User not created' };
@@ -92,7 +97,7 @@ export class UsersController {
     if(!result){
         return { message: 'User not found' };
     }
-    return { message: 'User deleted successfully' };
+    return result;
     
     }
 

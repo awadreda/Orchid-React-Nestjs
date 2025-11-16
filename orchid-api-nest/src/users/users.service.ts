@@ -15,16 +15,20 @@ export class UsersService {
 
    private userMapper = new UserMapper();
 
-  async getUsers(): Promise<UserResponseDto[]> {
+  async getUsers(): Promise<UserResponseDto[]  > {
     try {
       const users = await this._prisma.user.findMany();
 
-        const mappedUsers = this.userMapper.toResponseList(users);
+      
+      const mappedUsers = users.map((user =>  this.userMapper.toResponseDto(user)));
+
 
       return mappedUsers;
     } catch (error) {
-      return [];
+        console.error("Error fetching users:", error);
+        throw error;
     }
+   
   }
 
 
@@ -39,10 +43,23 @@ export class UsersService {
 
       return this.userMapper.toResponseDto(user);
     } catch (error) {
-      return null;
+      console.error("Error fetching user by ID:", error);
+      throw error;
     }
   }
 
+
+   async isUserExist(id) : Promise<boolean> {
+
+   
+      const user = await this._prisma.user.findUnique({
+        where: { id },
+      });
+      if (!user) {
+        return false;
+      }
+      return true;
+    }
 
     async createUser(createUserDto:CreateUserDto) : Promise<UserResponseDto|null> {
 
@@ -61,8 +78,9 @@ export class UsersService {
       
         })
         return this.userMapper.toResponseDto(newUser);
-      } catch (error) {
-        return null
+       } catch (error) {
+          console.error("Error creating user:", error);
+          throw error;
       }
 
     }
@@ -82,23 +100,34 @@ export class UsersService {
             }
             return this.userMapper.toResponseDto(updatedUser);}
         catch (error) { 
-          return null;
 
+            console.error("Error updating user:", error);
+            throw error;
 
       }
    
     }
 
-    async deleteUser(id:number) : Promise<boolean> {
+    async deleteUser(id:number) : Promise< {message:string}> {
     
     
       try{
+
+        if(!await this.isUserExist(id)){
+          return {message:'User not found'};
+        }
+
+
         await this._prisma.user.delete({
           where:{id}
         });
-        return true;
+
+        
+
+        return {message:'User deleted successfully'};
       } catch (error) {
-        return false;
+        console.error("Error deleting user:", error);
+        throw error;
       }
     }
 
