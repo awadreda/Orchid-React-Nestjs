@@ -8,3 +8,4 @@ export class StoryResponseDto {
   updatedAt: Date;
   authorId?: number;
 }
+

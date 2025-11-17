@@ -1,15 +1,25 @@
-import { IsOptional, IsString, IsBoolean } from 'class-validator';
+// update-story.dto.ts
+import { ApiProperty, ApiResponse } from '@nestjs/swagger';
+import { IsOptional, IsBoolean, IsString, IsInt } from 'class-validator';
 
 export class UpdateStoryDto {
-  @IsOptional()
   @IsString()
+  @IsOptional()
+  @ApiProperty({ type: String })
   title?: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
+  @ApiProperty({ type: String })
   content?: string;
 
-  @IsOptional()
   @IsBoolean()
+  @IsOptional()
+  @ApiProperty({ type: Boolean })
   published?: boolean;
+
+  @IsInt()
+  @ApiProperty({ type: Number })
+  @IsOptional()
+  authorId?: number;
 }
