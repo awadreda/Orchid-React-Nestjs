@@ -16,16 +16,23 @@ export class LikeController {
   constructor (private readonly likeService: LikeService) {}
 
   @Get('getStoryLikesCount/:storyId')
-  async getLikesCountForStory (@Param('storyId') storyId: number) {
-    return await this.likeService.getLikesCountForStory(storyId);
+  async getLikesCountForStory (@Param('storyId') storyId: string) {
+
+    const parsedStoryId = parseInt(storyId);
+
+    if (isNaN(parsedStoryId)) {
+      return { message: 'Invalid storyId' };
+    }
+    return await this.likeService.getLikesCountForStory(parsedStoryId);
   }
 
   @Post('likeStory')
   async likeStory (@Body() createLikeDto: CreateLikeDto) {
     return await this.likeService.likeStory(createLikeDto);
   }
+  
 
-  @Post('unlikeStory/:storyId/:userId')
+  @Delete('unlikeStory/:storyId/:userId')
   async unlikeStory (
     @Param('storyId') storyId: string,
     @Param('userId') userId: string,

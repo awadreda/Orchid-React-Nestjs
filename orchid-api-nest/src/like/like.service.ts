@@ -14,13 +14,24 @@ export class LikeService {
     const count = await this._prisma.like.count({
       where: { storyId: storyId },
     });
-    return count;
+    return {
+      storyId: storyId,
+       likesCount: count
+     };
   }
 
-
-  
+  async islikedByUser (storyId: number, userId: number) {
+    const count = await this._prisma.like.count({
+      where: { storyId: storyId, userId: userId },
+    });
+    return count > 0;
+  }
 
   async likeStory (createLikeDto: CreateLikeDto) {
+    if (await this.islikedByUser(createLikeDto.storyId, createLikeDto.userId)) {
+      return { message: 'Like already exists' };
+    }
+
     const like = await this._prisma.like.create({
       data: {
         storyId: createLikeDto.storyId,
