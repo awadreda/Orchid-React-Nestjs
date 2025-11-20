@@ -1,34 +1,42 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { LikeService } from './like.service';
 import { CreateLikeDto } from './dto/create-like.dto';
 import { UpdateLikeDto } from './dto/update-like.dto';
 
 @Controller('like')
 export class LikeController {
-  constructor(private readonly likeService: LikeService) {}
+  constructor (private readonly likeService: LikeService) {}
 
-  @Post()
-  create(@Body() createLikeDto: CreateLikeDto) {
-    return this.likeService.create(createLikeDto);
+  @Get('getStoryLikesCount/:storyId')
+  async getLikesCountForStory (@Param('storyId') storyId: number) {
+    return await this.likeService.getLikesCountForStory(storyId);
   }
 
-  @Get()
-  findAll() {
-    return this.likeService.findAll();
+  @Post('likeStory')
+  async likeStory (@Body() createLikeDto: CreateLikeDto) {
+    return await this.likeService.likeStory(createLikeDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.likeService.findOne(+id);
-  }
+  @Post('unlikeStory/:storyId/:userId')
+  async unlikeStory (
+    @Param('storyId') storyId: string,
+    @Param('userId') userId: string,
+  ) {
+    const parsedStoryId = parseInt(storyId);
+    const parsedUserId = parseInt(userId);
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLikeDto: UpdateLikeDto) {
-    return this.likeService.update(+id, updateLikeDto);
-  }
+    if (isNaN(parsedStoryId) || isNaN(parsedUserId)) {
+      return { message: 'Invalid storyId or userId' };
+    }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.likeService.remove(+id);
+    return await this.likeService.unlikeStory(parsedStoryId, parsedUserId);
   }
 }
