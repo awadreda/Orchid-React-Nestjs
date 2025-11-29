@@ -1,0 +1,376 @@
+openapi: 3.0.0
+paths:
+  /user/allusers:
+    get:
+      operationId: UsersController_GetAllUsers
+      parameters: []
+      responses:
+        "200":
+          description: ""
+      tags:
+        - Users
+  /user/userbyid/{id}:
+    get:
+      operationId: UsersController_GetUserById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ""
+      tags:
+        - Users
+  /user/createuser:
+    post:
+      operationId: UsersController_CreateUser
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserDto"
+      responses:
+        "201":
+          description: ""
+      tags:
+        - Users
+  /user/updateuser/{id}:
+    put:
+      operationId: UsersController_UpdateUser
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserDto"
+      responses:
+        "200":
+          description: ""
+      tags:
+        - Users
+  /user/deleteuser/{id}:
+    delete:
+      operationId: UsersController_DeleteUser
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ""
+      tags:
+        - Users
+  /story/allstories:
+    get:
+      operationId: StoryController_getAllStories
+      parameters: []
+      responses:
+        "200":
+          description: ""
+      tags:
+        - Story
+  /story/storybyid/{id}:
+    get:
+      operationId: StoryController_getStoryById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ""
+      tags:
+        - Story
+  /story/createstory:
+    post:
+      operationId: StoryController_createStory
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateStoryDto"
+      responses:
+        "201":
+          description: ""
+      tags:
+        - Story
+  /story/updatestory/{id}:
+    put:
+      operationId: StoryController_UpdateStory
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateStoryDto"
+      responses:
+        "200":
+          description: ""
+      tags:
+        - Story
+  /story/deletestory/{id}:
+    delete:
+      operationId: StoryController_deleteStory
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ""
+      tags:
+        - Story
+  /comment/GetCommentsByStoryId/{id}:
+    get:
+      operationId: CommentController_getAllCommentsForStory
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ""
+      tags:
+        - Comment
+  /comment/GetCommentById/{id}:
+    get:
+      operationId: CommentController_getCommentById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ""
+      tags:
+        - Comment
+  /comment/CreateComment:
+    post:
+      operationId: CommentController_createComment
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCommentDto"
+      responses:
+        "201":
+          description: ""
+      tags:
+        - Comment
+  /comment/UpdateComment/{id}:
+    put:
+      operationId: CommentController_updateComment
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCommentDto"
+      responses:
+        "200":
+          description: ""
+      tags:
+        - Comment
+  /comment/DeleteComment/{id}:
+    delete:
+      operationId: CommentController_deleteComment
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ""
+      tags:
+        - Comment
+  /like/getStoryLikesCount/{storyId}:
+    get:
+      operationId: LikeController_getLikesCountForStory
+      parameters:
+        - name: storyId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ""
+      tags:
+        - Like
+  /like/likeStory:
+    post:
+      operationId: LikeController_likeStory
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateLikeDto"
+      responses:
+        "201":
+          description: ""
+      tags:
+        - Like
+  /like/unlikeStory/{storyId}/{userId}:
+    delete:
+      operationId: LikeController_unlikeStory
+      parameters:
+        - name: storyId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: userId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ""
+      tags:
+        - Like
+info:
+  title: My API
+  description: API documentation
+  version: "1.0"
+  contact: {}
+tags: []
+servers: []
+components:
+  schemas:
+    CreateUserDto:
+      type: object
+      properties:
+        email:
+          type: string
+        name:
+          type: string
+        image:
+          type: string
+        role:
+          type: string
+      required:
+        - email
+        - name
+        - image
+        - role
+    UpdateUserDto:
+      type: object
+      properties:
+        email:
+          type: string
+        name:
+          type: string
+        image:
+          type: string
+        role:
+          type: string
+      required:
+        - email
+        - name
+        - image
+        - role
+    CreateStoryDto:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        published:
+          type: boolean
+        authorId:
+          type: number
+      required:
+        - title
+        - content
+        - published
+        - authorId
+    UpdateStoryDto:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        published:
+          type: boolean
+        authorId:
+          type: number
+      required:
+        - title
+        - content
+        - published
+        - authorId
+    CreateCommentDto:
+      type: object
+      properties:
+        content:
+          type: string
+          description: Content of the comment
+        storyId:
+          type: number
+          description: ID of the story being commented on
+        authorId:
+          type: number
+          description: ID of the author of the comment
+      required:
+        - content
+        - storyId
+        - authorId
+    UpdateCommentDto:
+      type: object
+      properties:
+        content:
+          type: string
+          description: Updated content of the comment
+    CreateLikeDto:
+      type: object
+      properties:
+        storyId:
+          type: number
+        userId:
+          type: number
+      required:
+        - storyId
+        - userId
