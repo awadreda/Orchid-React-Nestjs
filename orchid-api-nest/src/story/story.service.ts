@@ -79,6 +79,33 @@ export class StoryService {
     }
   }
 
+  //get story summry by id
+
+  async getStorySummaryById (id: number): Promise<storySummryDto | null> {
+    try {
+      const story = await this._prisma.story.findUnique({
+        where: { id },
+        include: {
+          likes: true,
+          comments: true,
+        },
+      });
+
+      if (!story) {
+        return null;
+      } else {
+        return this.storyMapper.toStorySummaryDto(
+          story,
+          story.likes.length,
+          story.comments.length,
+        );
+      }
+    } catch (error) {
+      console.error('Error fetching story by ID:', error);
+      throw error;
+    }
+  }
+
   // -----------------------------
   // Check if Story Exists
   // -----------------------------

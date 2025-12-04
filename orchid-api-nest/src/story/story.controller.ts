@@ -39,6 +39,26 @@ export class StoryController {
     return stories;
   }
 
+  //Get story summry by id
+
+  @Get('storysummarybyid/:id')
+  async getStorySummaryById (
+    @Param('id') id: string,
+  ): Promise<storySummryDto | { message: string }> {
+    if (isNaN(parseInt(id))) {
+      return { message: 'Invalid story ID' };
+    }
+
+    const idNum = parseInt(id);
+    const story = await this.storyService.getStorySummaryById(idNum);
+
+    if (!story) {
+      return { message: 'Story not found' };
+    }
+
+    return story;
+  }
+
   @Get('storybyid/:id')
   async getStoryById (
     @Param('id') id: string,
