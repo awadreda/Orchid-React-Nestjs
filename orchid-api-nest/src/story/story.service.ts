@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { CreateStoryDto } from './dto/create-story.dto';
 import { UpdateStoryDto } from './dto/update-story.dto';
 import { StoryMapper } from './Mapper/stroy-mapper';
-import { StoryResponseDto } from './dto/story-response.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { StoryResponseDto, storySummryDto } from './dto/story-response.dto';
+// import { PrismaService } from 'src/prisma/prisma.service';
 import { UsersService } from 'src/users/users.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class StoryService {
@@ -25,6 +26,33 @@ export class StoryService {
       });
 
       return this.storyMapper.toStoryResponseList(stories);
+    } catch (error) {
+      console.error('Error fetching stories:', error);
+      throw error;
+    }
+  }
+
+  // get stories summry
+  async getStoriesSummary (): Promise<storySummryDto[]> {
+    try {
+      const stories = await this._prisma.story.findMany({
+        orderBy: { createdAt: 'desc' },
+        take: 3,
+        include: {
+          likes: true,
+          comments: true,
+        },
+      });
+
+      const storiesDtosList = stories.map(s => {
+        return this.storyMapper.toStorySummaryDto(
+          s,
+          s.likes.length,
+          s.comments.length,
+        );
+      });
+
+      return storiesDtosList;
     } catch (error) {
       console.error('Error fetching stories:', error);
       throw error;
@@ -65,10 +93,12 @@ export class StoryService {
   // -----------------------------
   // Create Story
   // -----------------------------
-  async createStory (dto: CreateStoryDto): Promise<StoryResponseDto | {message:string}> {
+  async createStory (
+    dto: CreateStoryDto,
+  ): Promise<StoryResponseDto | { message: string }> {
     try {
-      if (!await this._userService.isUserExist(dto.authorId))
-        return {message:' the author not found'}
+      if (!(await this._userService.isUserExist(dto.authorId)))
+        return { message: ' the author not found' };
       const story = await this._prisma.story.create({
         data: {
           title: dto.title,

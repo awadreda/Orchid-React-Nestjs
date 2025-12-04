@@ -2,7 +2,7 @@ import type {
   CreateStoryDto,
   StoryResponseDto,
   UpdateStoryDto
-} from '@/Types/storyTypes'
+} from '@/types/storyTypes'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 import {
@@ -160,5 +160,4 @@ const storySlice = createSlice({
   }
 })
 
-
-export default storySlice.reducer  
+export default storySlice.reducer

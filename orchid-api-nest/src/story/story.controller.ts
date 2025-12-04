@@ -11,7 +11,7 @@ import {
 import { StoryService } from './story.service';
 import { CreateStoryDto } from './dto/create-story.dto';
 import { UpdateStoryDto } from './dto/update-story.dto';
-import { StoryResponseDto } from './dto/story-response.dto';
+import { StoryResponseDto, storySummryDto } from './dto/story-response.dto';
 
 @Controller('story')
 export class StoryController {
@@ -20,6 +20,18 @@ export class StoryController {
   @Get('allstories')
   async getAllStories (): Promise<StoryResponseDto[] | { message: string }> {
     const stories = await this.storyService.getAllStories();
+
+    if (stories.length === 0) {
+      return { message: 'No stories found' };
+    }
+    return stories;
+  }
+
+  //Get stories summary
+
+  @Get('storiessummary')
+  async getStoriesSummary (): Promise<storySummryDto[] | { message: string }> {
+    const stories = await this.storyService.getStoriesSummary();
 
     if (stories.length === 0) {
       return { message: 'No stories found' };
@@ -49,9 +61,6 @@ export class StoryController {
   async createStory (
     @Body() createStoryDto: CreateStoryDto,
   ): Promise<StoryResponseDto | { message: string }> {
-
-    
-    
     const story = await this.storyService.createStory(createStoryDto);
 
     if (!story) {

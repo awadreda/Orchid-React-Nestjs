@@ -1,4 +1,4 @@
-import type { CreateStoryDto, UpdateStoryDto } from '@/Types/storyTypes'
+import type { CreateStoryDto, UpdateStoryDto } from '@/types/storyTypes'
 import axios from 'axios'
 
 const api = axios.create({
@@ -30,7 +30,6 @@ export const getStoryByIdApi = async (id: number) => {
   }
 }
 
-
 export const createStoryApi = async (storyData: CreateStoryDto) => {
   try {
     const response = await api.post('/createstory', storyData)
@@ -41,7 +40,7 @@ export const createStoryApi = async (storyData: CreateStoryDto) => {
   }
 }
 
-export const updateStoryApi = async(id:number, storyData: UpdateStoryDto)  => {
+export const updateStoryApi = async (id: number, storyData: UpdateStoryDto) => {
   try {
     const response = await api.put(`/updatestory/${id}`, storyData)
     return response.data
@@ -50,11 +49,6 @@ export const updateStoryApi = async(id:number, storyData: UpdateStoryDto)  => {
     throw error
   }
 }
-
-
-
-
-
 
 export const deleteStoryApi = async (id: number) => {
   try {
