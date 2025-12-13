@@ -13,6 +13,18 @@ export class UpdateStoryDto {
   @ApiProperty({ type: String })
   content?: string;
 
+
+  @IsString()
+  @ApiProperty({ type: String })
+  @IsOptional()
+  caption?: string;
+
+  @IsString()
+  @ApiProperty({ type: String })
+  @IsOptional()
+  thumbnailUrl?: string;
+
+
   @IsBoolean()
   @IsOptional()
   @ApiProperty({ type: Boolean })

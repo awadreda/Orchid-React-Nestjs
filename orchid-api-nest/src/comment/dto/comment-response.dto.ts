@@ -4,4 +4,5 @@ export class CommentResponseDto {
   storyId: number;
   authorId: number;
   createdAt: Date;
+  username: string;
 }

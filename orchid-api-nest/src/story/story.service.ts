@@ -6,6 +6,7 @@ import { StoryResponseDto, storySummryDto } from './dto/story-response.dto';
 // import { PrismaService } from 'src/prisma/prisma.service';
 import { UsersService } from 'src/users/users.service';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Story } from '@prisma/client';
 
 @Injectable()
 export class StoryService {
@@ -37,7 +38,7 @@ export class StoryService {
     try {
       const stories = await this._prisma.story.findMany({
         orderBy: { createdAt: 'desc' },
-        take: 3,
+
         include: {
           likes: true,
           comments: true,
@@ -62,17 +63,22 @@ export class StoryService {
   // -----------------------------
   // Get Story By ID
   // -----------------------------
-  async getStoryById (id: number): Promise<StoryResponseDto | null> {
+  async getStoryById (id: number): Promise<Story | null> {
     try {
       const story = await this._prisma.story.findUnique({
         where: { id },
+        include: {
+          likes: true,
+          comments: true,
+        },
       });
 
       if (!story) {
         return null;
       }
 
-      return this.storyMapper.toStoryResponse(story);
+      // return this.storyMapper.toStoryResponse(story);
+      return story;
     } catch (error) {
       console.error('Error fetching story by ID:', error);
       throw error;
@@ -131,6 +137,8 @@ export class StoryService {
           title: dto.title,
           content: dto.content,
           published: dto.published ?? false,
+          thumbnailUrl: dto.thumbnailUrl ?? null,
+          caption: dto.caption ?? null,
           authorId: dto.authorId ?? null,
           createdAt: new Date(),
         },
@@ -161,6 +169,8 @@ export class StoryService {
         data: {
           title: dto.title,
           content: dto.content,
+          thumbnailUrl: dto.thumbnailUrl,
+          caption: dto.caption,
           published: dto.published,
           authorId: dto.authorId,
         },

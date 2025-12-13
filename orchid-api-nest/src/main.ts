@@ -10,6 +10,16 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
 
+  app.enableCors({
+  origin: 'http://localhost:5173', // 👈 Change to your actual frontend port (e.g., Vite's default)
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+});
+
+  
+
+
+
  // Swagger configuration
   const config = new DocumentBuilder()
     .setTitle('My API')

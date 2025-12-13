@@ -9,6 +9,7 @@ export class CommentMapper {
       storyId: comment.storyId,
       authorId: comment.authorId,
       createdAt: comment.createdAt,
+      username: comment.username,
     };
   }
 

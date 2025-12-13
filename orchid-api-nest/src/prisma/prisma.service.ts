@@ -1,22 +1,16 @@
-import { Global, Injectable, OnModuleInit } from '@nestjs/common'
-import { PrismaClient } from '@prisma/client'
-import { withAccelerate } from '@prisma/extension-accelerate';
+// import { PrismaClient } from '../generated/prisma/client';
 
+import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { Injectable } from '@nestjs/common';
 
-
-Global()
 @Injectable()
-export class PrismaService  extends PrismaClient implements OnModuleInit {
+export class PrismaService extends PrismaClient {
+  constructor () {
+    const adapter = new PrismaPg({
+      connectionString: process.env.DATABASE_URL!,
+    });
 
-  async onModuleInit() {
-    
-    await this.$connect()
+    super({ adapter });
   }
-
-  extendedPrismaClient() {
-    return this.$extends(withAccelerate());
-  }
-
-
-
 }

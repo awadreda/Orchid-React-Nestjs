@@ -1,4 +1,8 @@
-import type { CreateStoryDto, UpdateStoryDto } from '@/types/storyTypes'
+import type {
+  CreateStoryDto,
+  StorySummaryDto,
+  UpdateStoryDto
+} from '@/types/storyTypes'
 import axios from 'axios'
 
 const api = axios.create({
@@ -12,9 +16,19 @@ const api = axios.create({
 export const getAllStoriesApi = async () => {
   try {
     const response = await api.get(`/allstories`)
-    return response.data
+    return response.data 
   } catch (error) {
     console.error('Error fetching all stories:', error)
+    throw error
+  }
+}
+
+export const getStoriesSummaryApi = async () => {
+  try {
+    const response = await api.get(`/storiessummary`)
+    return response.data as StorySummaryDto[]
+  } catch (error) {
+    console.error('Error fetching stories summary:', error)
     throw error
   }
 }
@@ -26,6 +40,16 @@ export const getStoryByIdApi = async (id: number) => {
     return response.data
   } catch (error) {
     console.error('Error fetching story by ID:', error)
+    throw error
+  }
+}
+
+export const getStoriesSummaryByIdApi = async (id: number) => {
+  try {
+    const response = await api.get(`storysummarybyid/${id}`)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching stories summary by ID:', error)
     throw error
   }
 }

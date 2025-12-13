@@ -19,6 +19,16 @@ export class CreateStoryDto {
   @IsOptional()
   content?: string;
 
+  @IsString()
+  @ApiProperty({ type: String })
+  @IsOptional()
+  caption?: string;
+
+  @IsString()
+  @ApiProperty({ type: String })
+  @IsOptional()
+  thumbnailUrl?: string;
+
   @IsBoolean()
   @ApiProperty({ type: Boolean })
   @IsOptional()

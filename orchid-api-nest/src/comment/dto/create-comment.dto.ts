@@ -18,4 +18,8 @@ export class CreateCommentDto {
   @ApiProperty({ type: Number, description: 'ID of the author of the comment' })
   @IsInt()
   authorId: number;
+
+  @ApiProperty({ type: String, description: 'Username of the author' })
+  @IsString()
+  username: string;
 }

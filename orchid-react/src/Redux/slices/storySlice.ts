@@ -1,6 +1,8 @@
 import type {
   CreateStoryDto,
   StoryResponseDto,
+  StorySummaryDto,
+  StoryWithCommentsAndLikes,
   UpdateStoryDto
 } from '@/types/storyTypes'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
@@ -8,6 +10,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import {
   createStoryApi,
   getAllStoriesApi,
+  getStoriesSummaryByIdApi,
   getStoryByIdApi,
   updateStoryApi
 } from '../apis/storiesApi'
@@ -17,7 +20,9 @@ interface StoryState {
   status: 'idle' | 'loading' | 'succeeded' | 'failed'
   error: string | null
   story: StoryResponseDto | null
-  CurrentStory: StoryResponseDto | null
+  CurrentStory: StoryWithCommentsAndLikes | null
+  storySummary: StorySummaryDto | null
+  storiesSummary: StorySummaryDto[] | null
 }
 
 const initialState: StoryState = {
@@ -30,11 +35,13 @@ const initialState: StoryState = {
     content: '',
     published: false,
     viewCount: 0,
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    createdAt: '',
+    updatedAt: '',
     authorId: 0
   },
-  CurrentStory: null
+  CurrentStory: null,
+  storySummary: null,
+  storiesSummary: null
 }
 
 export const getAllStoriesSlice = createAsyncThunk(`/allstories`, async () => {
@@ -42,7 +49,25 @@ export const getAllStoriesSlice = createAsyncThunk(`/allstories`, async () => {
   return response
 })
 
-export const getAllStoriesByIdSlice = createAsyncThunk(
+export const getStoriesSummarySlice = createAsyncThunk(
+  `/storiessummary`,
+  async () => {
+    const response = await getAllStoriesApi()
+    console.log('Response from slice:', response)
+    return response as StorySummaryDto[]
+    // return response
+  }
+)
+
+export const getStoriesSummaryByIdSlice = createAsyncThunk(
+  `/storysummarybyid`,
+  async (id: number) => {
+    const response = await getStoriesSummaryByIdApi(id)
+    return response
+  }
+)
+
+export const getStoryByIdSlice = createAsyncThunk(
   `/storybyid`,
   async (id: number) => {
     const response = await getStoryByIdApi(id)
@@ -95,15 +120,46 @@ const storySlice = createSlice({
       state.error = action.error.message || 'Failed to fetch stories'
     })
 
-    // Get Story By ID
-    builder.addCase(getAllStoriesByIdSlice.pending, state => {
+    //Get all stories summary
+
+    builder.addCase(getStoriesSummarySlice.pending, state => {
       state.status = 'loading'
     })
-    builder.addCase(getAllStoriesByIdSlice.fulfilled, (state, action) => {
+    builder.addCase(getStoriesSummarySlice.fulfilled, (state, action) => {
+      state.status = 'succeeded'
+      state.storiesSummary = action.payload as StorySummaryDto[]
+    })
+    builder.addCase(getStoriesSummarySlice.rejected, (state, action) => {
+      state.status = 'failed'
+      state.error = action.error.message || 'Failed to fetch stories summary'
+    })
+
+    // Get Stories Summary By ID
+
+    builder.addCase(getStoriesSummaryByIdSlice.pending, state => {
+      state.status = 'loading'
+    })
+    builder.addCase(getStoriesSummaryByIdSlice.fulfilled, (state, action) => {
+      state.status = 'succeeded'
+      state.storySummary = action.payload as StorySummaryDto
+      console.log('Story Summary:', action.payload)
+      // state.storySummary = action.payload
+    })
+    builder.addCase(getStoriesSummaryByIdSlice.rejected, (state, action) => {
+      state.status = 'failed'
+      state.error =
+        action.error.message || 'Failed to fetch stories summary by ID'
+    })
+
+    // Get Story By ID
+    builder.addCase(getStoryByIdSlice.pending, state => {
+      state.status = 'loading'
+    })
+    builder.addCase(getStoryByIdSlice.fulfilled, (state, action) => {
       state.status = 'succeeded'
       state.CurrentStory = action.payload
     })
-    builder.addCase(getAllStoriesByIdSlice.rejected, (state, action) => {
+    builder.addCase(getStoryByIdSlice.rejected, (state, action) => {
       state.status = 'failed'
       state.error = action.error.message || 'Failed to fetch story by ID'
     })

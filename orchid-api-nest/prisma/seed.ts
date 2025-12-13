@@ -71,21 +71,21 @@ async function main() {
   });
 
   // Comments
-  await prisma.comment.create({
-    data: {
-      content: 'Nice story!',
-      storyId: story1.id,
-      authorId: user2.id,
-    },
-  });
+  // await prisma.comment.create({
+  //   data: {
+  //     content: 'Nice story!',
+  //     storyId: story1.id,
+  //     authorId: user2.id,
+  //   },
+  // });
 
-  await prisma.comment.create({
-    data: {
-      content: 'Thanks for sharing!',
-      storyId: story2.id,
-      authorId: user1.id,
-    },
-  });
+  // await prisma.comment.create({
+  //   data: {
+  //     content: 'Thanks for sharing!',
+  //     storyId: story2.id,
+  //     authorId: user1.id,
+  //   },
+  // });
 
   // Likes
   await prisma.like.create({

@@ -54,6 +54,7 @@ export class CommentService {
           content: createCommentDto.content,
           storyId: createCommentDto.storyId,
           authorId: createCommentDto.authorId,
+          username: createCommentDto.username,
         },
       });
 

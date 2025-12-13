@@ -12,6 +12,7 @@ import { StoryService } from './story.service';
 import { CreateStoryDto } from './dto/create-story.dto';
 import { UpdateStoryDto } from './dto/update-story.dto';
 import { StoryResponseDto, storySummryDto } from './dto/story-response.dto';
+import { Story } from '@prisma/client';
 
 @Controller('story')
 export class StoryController {
@@ -62,7 +63,7 @@ export class StoryController {
   @Get('storybyid/:id')
   async getStoryById (
     @Param('id') id: string,
-  ): Promise<StoryResponseDto | { message: string }> {
+  ): Promise<Story | { message: string }> {
     if (isNaN(parseInt(id))) {
       return { message: 'Invalid story ID' };
     }
@@ -77,6 +78,8 @@ export class StoryController {
     return story;
   }
 
+  // Create Story
+
   @Post('createstory')
   async createStory (
     @Body() createStoryDto: CreateStoryDto,
@@ -88,6 +91,25 @@ export class StoryController {
     }
 
     return story;
+  }
+
+  //create list of stories
+  @Post('createlistofstories')
+  async createListOfStories (
+    @Body() createStoryDtos: CreateStoryDto[],
+  ): Promise<(StoryResponseDto | { message: string })[]> {
+    const stories: (StoryResponseDto | { message: string })[] = [];
+
+    for (const stDto of createStoryDtos) {
+      const story = await this.storyService.createStory(stDto);
+
+      if (!story) {
+        throw new Error('Story creation failed');
+      }
+
+      stories.push(story);
+    }
+    return stories;
   }
 
   @Put('updatestory/:id')

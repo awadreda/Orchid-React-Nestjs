@@ -7,8 +7,18 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import IconButton from '@mui/material/IconButton'
+import type { StorySummaryDto } from '@/types/storyTypes'
+// import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
+import { FaComment } from 'react-icons/fa'
 
-export default function StoryCard () {
+import { FcLikePlaceholder } from 'react-icons/fc'
+import { NavLink } from 'react-router'
+
+interface StoryCardProps {
+  storySummaryForCard: StorySummaryDto
+}
+
+export default function StoryCard ({ storySummaryForCard }: StoryCardProps) {
   return (
     <Card
       sx={{
@@ -22,17 +32,21 @@ export default function StoryCard () {
       <CardMedia
         component='img'
         height='180'
-        image='https://www.noor-book.com/publice/covers_cache_webp/2/5/3/a/07eecd4c8753a956d7ea1997deb1254e.jpg.webp'
+        // image='https://www.noor-book.com/publice/covers_cache_webp/2/5/3/a/07eecd4c8753a956d7ea1997deb1254e.jpg.webp'
+        image={
+          storySummaryForCard.thumbnailUrl ||
+          'https://www.noor-book.com/publice/covers_cache_webp/2/5/3/a/07eecd4c8753a956d7ea1997deb1254e.jpg.webp'
+        }
         alt='story cover'
       />
 
       <CardContent sx={{ pb: 1 }}>
         <Typography variant='h5' fontWeight={700}>
-          الرهان
+          {storySummaryForCard.title || 'الرهان'}
         </Typography>
 
         <Typography variant='body2' sx={{ color: 'text.secondary', mt: 0.5 }}>
-          صرخة من شمال غزة
+          {storySummaryForCard.caption || 'صرخة من شمال غزة'}
         </Typography>
       </CardContent>
 
@@ -43,16 +57,23 @@ export default function StoryCard () {
           <Stack direction='row' spacing={0.5} alignItems='center'>
             <IconButton size='small'>
               {/* <FavoriteBorderIcon fontSize='small' /> */}
+
+              <FcLikePlaceholder size={18} />
             </IconButton>
-            <Typography variant='body2'>123</Typography>
+            <Typography variant='body2'>
+              {storySummaryForCard.likesCount || 0}{' '}
+            </Typography>
           </Stack>
 
           {/* Comments */}
           <Stack direction='row' spacing={0.5} alignItems='center'>
             <IconButton size='small'>
               {/* <ChatBubbleOutlineIcon fontSize='small' /> */}
+              <FaComment size={14} />
             </IconButton>
-            <Typography variant='body2'>45</Typography>
+            <Typography variant='body2'>
+              {storySummaryForCard.commentsCount || 0}
+            </Typography>
           </Stack>
         </Stack>
       </Box>
@@ -64,9 +85,11 @@ export default function StoryCard () {
         <Button size='small' sx={{ fontWeight: 'bold' }}>
           مشاركة
         </Button>
-        <Button size='small' sx={{ fontWeight: 'bold' }}>
-          قراءة
-        </Button>
+        <NavLink to={`/stories/${storySummaryForCard.id}`}>
+          <Button size='small' sx={{ fontWeight: 'bold' }}>
+            قراءة
+          </Button>
+        </NavLink>
       </CardActions>
     </Card>
   )
