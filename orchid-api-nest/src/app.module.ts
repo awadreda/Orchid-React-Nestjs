@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { StoryModule } from './story/story.module';
 import { CommentModule } from './comment/comment.module';
 import { LikeModule } from './like/like.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { LikeModule } from './like/like.module';
     StoryModule,
     CommentModule,
     LikeModule,
+    ConfigModule.forRoot({ isGlobal: true }),
   ],
   controllers: [AppController],
   providers: [AppService],
