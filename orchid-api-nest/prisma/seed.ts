@@ -2,18 +2,22 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-async function main() {
+async function main () {
   // Create Users
-  const user1 = await prisma.user.create({
-    data: {
+  const user1 = await prisma.user.upsert({
+    where: { email: 'user1@example.com' },
+    update: {}, // لا تعدل شيئاً إذا كان موجوداً
+    create: {
       email: 'user1@example.com',
       name: 'User One',
       role: 'USER',
     },
   });
 
-  const user2 = await prisma.user.create({
-    data: {
+  const user2 = await prisma.user.upsert({
+    where: { email: 'admin@example.com' },
+    update: {},
+    create: {
       email: 'admin@example.com',
       name: 'Admin User',
       role: 'ADMIN',
@@ -71,21 +75,23 @@ async function main() {
   });
 
   // Comments
-  // await prisma.comment.create({
-  //   data: {
-  //     content: 'Nice story!',
-  //     storyId: story1.id,
-  //     authorId: user2.id,
-  //   },
-  // });
+  await prisma.comment.create({
+    data: {
+      content: 'Nice story!',
+      username: 'user1',
+      storyId: story1.id,
+      authorId: user2.id,
+    },
+  });
 
-  // await prisma.comment.create({
-  //   data: {
-  //     content: 'Thanks for sharing!',
-  //     storyId: story2.id,
-  //     authorId: user1.id,
-  //   },
-  // });
+  await prisma.comment.create({
+    data: {
+      content: 'Thanks for sharing!',
+      username: 'admin',
+      storyId: story2.id,
+      authorId: user1.id,
+    },
+  });
 
   // Likes
   await prisma.like.create({
@@ -106,7 +112,7 @@ async function main() {
 }
 
 main()
-  .catch((e) => {
+  .catch(e => {
     console.error('❌ Seeding error:', e);
     process.exit(1);
   })
