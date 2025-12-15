@@ -1,6 +1,6 @@
 import './App.css'
 import StoryList from './Components/Story/storyList'
-import StoryPage from './Components/Story/StoryPage'
+import StoryPage from './Pages/Storypages/StoryReadingPage'
 
 function App () {
   return <></>

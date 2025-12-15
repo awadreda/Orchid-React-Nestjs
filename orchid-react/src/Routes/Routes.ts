@@ -2,7 +2,8 @@ import { createBrowserRouter } from 'react-router'
 
 import HomePage from '../Pages/HomePage'
 import StoryList from '@/Components/Story/storyList'
-import StoryPage from '@/Components/Story/StoryPage'
+import StoryReadingPage from '@/Pages/Storypages/StoryReadingPage'
+import AddNewStoryPage from '@/Pages/Storypages/AddNewStoryPage'
 
 const router = createBrowserRouter([
   {
@@ -13,7 +14,11 @@ const router = createBrowserRouter([
     path: '/stories',
     Component: StoryList
   },
-  { path: 'stories/:storyId', Component: StoryPage }
+  { path: 'stories/:storyId', Component: StoryReadingPage },
+  {
+    path: '/addnewstory',
+    Component: AddNewStoryPage
+  }
 ])
 
 export default router

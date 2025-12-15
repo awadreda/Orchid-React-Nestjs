@@ -8,6 +8,8 @@ export default function HomePage () {
       <div>Welcome to the Home Page</div>
 
       <NavLink to='/stories'>Go to Stories</NavLink>
+      <br />
+      <NavLink to='/addnewstory'>Add New Story</NavLink>
     </>
   )
 }

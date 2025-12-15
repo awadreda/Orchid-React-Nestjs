@@ -9,12 +9,12 @@ import {
   Stack,
   Button
 } from '@mui/material'
-import MarkdownRenderer from '../MarkDown/MarkdownRenderer'
+import MarkdownRenderer from '../../Components/MarkDown/MarkdownRenderer'
 import { useParams } from 'react-router'
 import { useAppDispatch, useAppSelector } from '@/Redux/hooks'
 import { getStoryByIdSlice } from '@/Redux/slices/storySlice'
 
-export default function StoryPage () {
+export default function StoryReadingPage () {
   const { storyId } = useParams()
 
   const [loading, setLoading] = useState(true)
