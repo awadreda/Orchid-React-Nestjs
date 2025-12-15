@@ -1,4 +1,7 @@
+import { useAppDispatch, useAppSelector } from '@/Redux/hooks'
 import React, { useState, type ChangeEvent, type FormEvent } from 'react'
+import Mammoth from 'mammoth'
+import { FaTheRedYeti } from 'react-icons/fa'
 
 // يمكنك جلب هذه الواجهة من ملف Typescript الخاص بك
 export interface CreateStoryDto {
@@ -114,6 +117,12 @@ export default function AddNewStoryPage () {
     authorId: undefined
   })
 
+  const dispatch = useAppDispatch()
+
+  const storyApi = useAppSelector(state => state.story)
+  // const userApi = useAppSelector(state => state.user)
+  const currentStory = storyApi.CurrentStory
+
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
 
   // 1. تحديث منطق handleChange ليشمل الـ checkbox بشكل صحيح
@@ -138,20 +147,64 @@ export default function AddNewStoryPage () {
   }
 
   // 2. معالجة رفع ملف المحتوى (Markdown/TXT)
-  const handleContentFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleContentFileUpload =async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (file) {
+
+    if (!file) {
+      console.log('No file selected')
+      return
+    }
+
+    const fileExtension = file.name.split('.').pop()?.toLowerCase()
+
+    if (fileExtension === 'txt' || fileExtension === 'md') {
       const reader = new FileReader()
       reader.onload = event => {
         setStoryData(prev => ({
           ...prev,
           content: event.target?.result as string
         }))
-        // يمكنك إزالة الـ alert في التصميم النهائي
-        // alert(`تم قراءة ملف المحتوى بنجاح: ${file.name}`);
       }
-      reader.readAsText(file)
+      reader.readAsText(file);
     }
+    else if (fileExtension === 'docx') {
+    
+      const reader = new FileReader()
+      reader.onload = event => {
+      
+        if(!event.target?.result) return
+
+
+        try{
+
+        
+        
+            
+            const result =   await Mammoth.convertToHtml({ arrayBuffer: event.target.result as ArrayBuffer })
+            
+            setStoryData(prev => ({
+              ...prev,
+              content: result.value // النص المحول إلى HTML
+            }))
+            
+            
+          }
+          catch(err) {
+            console.error('خطأ في تحويل ملف DOCX:', err)
+          }
+        }
+      }
+      
+        setStoryData(prev => ({
+          ...prev,
+          content: ''
+        }))
+    
+    }
+
+  
+
+   
   }
 
   // 3. معالجة رفع ملف الصورة المصغرة (Thumbnail File)
@@ -317,7 +370,7 @@ export default function AddNewStoryPage () {
           {/* رفع ملف المحتوى (Markdown/TXT) */}
           <FileUploadButton
             label='ملف المحتوى (Markdown/TXT):'
-            accept='.md,.txt'
+            accept='.md,.txt,.docx'
             onChange={handleContentFileUpload}
             contentInfo={
               storyData.content
