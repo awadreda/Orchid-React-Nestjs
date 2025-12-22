@@ -1,8 +1,20 @@
 import { useAppDispatch, useAppSelector } from '@/Redux/hooks'
-import React, { useState, type ChangeEvent, type FormEvent } from 'react'
+import React, {
+  useState,
+  type ChangeEvent,
+  type FormEvent,
+  useEffect
+} from 'react'
 import Mammoth from 'mammoth'
 import { FaTheRedYeti } from 'react-icons/fa'
-import { createStorySlice } from '@/Redux/slices/storySlice'
+// نفترض وجود دالة updateStorySlice في storySlice
+import {
+  createStorySlice,
+  getStoryByIdSlice,
+  updateStorySlice
+} from '@/Redux/slices/storySlice'
+import { useParams } from 'react-router'
+import type { StoryResponseDto, UpdateStoryDto } from '@/types/storyTypes'
 import ReturnHome from '@/Components/Home/ReturnHome'
 
 // يمكنك جلب هذه الواجهة من ملف Typescript الخاص بك
@@ -15,6 +27,11 @@ export interface CreateStoryDto {
   authorId?: number
 }
 
+// واجهة القصة الكاملة (نفترض أنها تحتوي على ID)
+export interface StoryDto extends CreateStoryDto {
+  id: number
+}
+
 // قائمة وهمية للمؤلفين لاستخدامها في Select Box
 const mockAuthors = [
   { id: 1, name: 'أحمد' },
@@ -23,7 +40,7 @@ const mockAuthors = [
 ]
 
 // **********************************************
-// الأنماط الثابتة (Styles)
+// الأنماط الثابتة (Styles) (لم تتغير)
 // **********************************************
 
 const styles = {
@@ -109,36 +126,58 @@ const styles = {
 // المكون الرئيسي
 // **********************************************
 
-export default function AddNewStoryPage () {
-  const [storyData, setStoryData] = useState<CreateStoryDto>({
-    title: '',
-    content: '',
-    caption: '',
-    thumbnailUrl: '',
-    published: false,
-    authorId: undefined
+// لنفترض أن هذا المكون يتم استدعاؤه بـ StoryId، أو أن StoryId يتم جلبه من Router
+// سنقوم بالاعتماد على 'storyApi.CurrentStory' كبيانات أولية (كما هو الحال في الكود الأصلي)
+
+export default function UpdateStoryPage () {
+  const dispatch = useAppDispatch()
+  const storyApi = useAppSelector(state => state.story)
+  // const currentStory = storyApi.CurrentStory
+  const initialStory = storyApi.CurrentStory
+
+  const storyIdfromParams = useParams().storyId
+
+  const storyId = storyIdfromParams ? parseInt(storyIdfromParams) : 0
+  const [storyData, setStoryData] = useState<UpdateStoryDto>({
+    title: initialStory?.title || '',
+    content: initialStory?.content || '',
+    caption: initialStory?.caption || '',
+    thumbnailUrl: initialStory?.thumbnailUrl || '',
+    published: initialStory?.published || false,
+    authorId: initialStory?.authorId || undefined
   })
 
-  const dispatch = useAppDispatch()
-
-  const storyApi = useAppSelector(state => state.story)
-  // const userApi = useAppSelector(state => state.user)
-  const currentStory = storyApi.CurrentStory
-
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
+
+  // *************************************************************
+  // Effect لتحديث الحالة عند تغيير initialStory
+  // (مهم إذا كانت بيانات initialStory تُحمّل بشكل غير متزامن)
+  // *************************************************************
+  useEffect(() => {
+    dispatch(getStoryByIdSlice(storyId))
+    if (initialStory) {
+      setStoryData({
+        title: initialStory.title || '',
+        content: initialStory.content || '',
+        caption: initialStory.caption || '',
+        thumbnailUrl: initialStory.thumbnailUrl || '',
+        published: initialStory.published || false,
+        authorId: initialStory.authorId || undefined
+      })
+    }
+  }, [])
 
   // 1. تحديث منطق handleChange ليشمل الـ checkbox بشكل صحيح
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    const { name, value, type } = e.target
+    const target = e.target
+    const { name, value, type } = target
 
-    if (type === 'checkbox' && e.target instanceof HTMLInputElement) {
-      const target = e.target as HTMLInputElement
-
+    if (target instanceof HTMLInputElement && type === 'checkbox') {
       setStoryData(prev => ({
         ...prev,
-        [name]: target.checked // تم تصحيح هذا السطر
+        [name]: target.checked
       }))
     } else {
       setStoryData(prev => ({
@@ -148,62 +187,7 @@ export default function AddNewStoryPage () {
     }
   }
 
-  // 2. معالجة رفع ملف المحتوى (Markdown/TXT)
-  // const handleContentFileUpload =async (e: ChangeEvent<HTMLInputElement>) => {
-  //   const file = e.target.files?.[0]
-
-  //   if (!file) {
-  //     console.log('No file selected')
-  //     return
-  //   }
-
-  //   const fileExtension = file.name.split('.').pop()?.toLowerCase()
-
-  //   if (fileExtension === 'txt' || fileExtension === 'md') {
-  //     const reader = new FileReader()
-  //     reader.onload = event => {
-  //       setStoryData(prev => ({
-  //         ...prev,
-  //         content: event.target?.result as string
-  //       }))
-  //     }
-  //     reader.readAsText(file);
-  //   }
-  //   else if (fileExtension === 'docx') {
-
-  //     const reader = new FileReader()
-  //     reader.onload = event => {
-
-  //       if(!event.target?.result) return
-
-  //       try{
-
-  //           const arrayBuffer = event.target.result as ArrayBuffer
-
-  //           const result =   await Mammoth.convertToHtml({ arrayBuffer: event.target.result as ArrayBuffer })
-
-  //           setStoryData(prev => ({
-  //             ...prev,
-  //             content: result.value // النص المحول إلى HTML
-  //           }))
-
-  //         }
-  //         catch(err) {
-  //           console.error('خطأ في تحويل ملف DOCX:', err)
-  //         }
-  //       }
-
-  //     }
-
-  //       setStoryData(prev => ({
-  //         ...prev,
-  //         content: ''
-  //       }))
-
-  //   }
-
-  // }
-
+  // 2. معالجة رفع ملف المحتوى (Markdown/TXT/DOCX)
   const handleContentFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -213,7 +197,6 @@ export default function AddNewStoryPage () {
     // TXT / MD
     if (ext === 'txt' || ext === 'md') {
       const text = await file.text()
-      console.log('the text content', text)
       setStoryData(prev => ({
         ...prev,
         content: text
@@ -225,13 +208,7 @@ export default function AddNewStoryPage () {
     if (ext === 'docx') {
       try {
         const arrayBuffer = await file.arrayBuffer()
-
-        const result = await Mammoth.convertToHtml({
-          arrayBuffer
-        })
-
-        console.log('the docx content', result.value)
-
+        const result = await Mammoth.convertToHtml({ arrayBuffer })
         setStoryData(prev => ({
           ...prev,
           content: result.value
@@ -242,7 +219,7 @@ export default function AddNewStoryPage () {
       return
     }
 
-    alert('نوع الملف غير مدعوم')
+    alert('نوع الملف غير مدعوم. يرجى اختيار .md، .txt، أو .docx')
   }
 
   // 3. معالجة رفع ملف الصورة المصغرة (Thumbnail File)
@@ -250,6 +227,7 @@ export default function AddNewStoryPage () {
     const file = e.target.files?.[0]
     if (file) {
       setThumbnailFile(file)
+      // إفراغ حقل الـ URL عند رفع ملف
       setStoryData(prev => ({
         ...prev,
         thumbnailUrl: ''
@@ -257,14 +235,23 @@ export default function AddNewStoryPage () {
     }
   }
 
-  // 4. معالجة إرسال النموذج (لم يتم تغييره)
+  // 4. معالجة إرسال النموذج (تحديث)
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    let finalStoryData: CreateStoryDto = { ...storyData }
+
+    // يجب التأكد من وجود Story ID لتنفيذ عملية التحديث
+    if (!initialStory?.id) {
+      console.error('لا يوجد Story ID لتحديث القصة.')
+      alert('خطأ: لا يمكن العثور على مُعرّف القصة.')
+      return
+    }
+
+    let finalStoryData: UpdateStoryDto = { ...storyData }
+    const storyId = initialStory.id // استخراج ID
 
     if (thumbnailFile) {
       console.log('سيتم رفع هذا الملف:', thumbnailFile.name)
-      // محاكاة لـ URL
+      // في بيئة الإنتاج: هنا يتم استدعاء API لرفع الصورة والحصول على الرابط
       finalStoryData.thumbnailUrl = `uploaded-temp-url/${thumbnailFile.name}`
     }
 
@@ -272,29 +259,40 @@ export default function AddNewStoryPage () {
       ? parseInt(finalStoryData.authorId as any)
       : undefined
 
-    dispatch(createStorySlice(finalStoryData)).then(() => {
-      console.log('تم إنشاء القصة بنجاح')
+    // **********************************************
+    //  استدعاء دالة تحديث القصة
+    // **********************************************
+    // نفترض أن updateStorySlice تقبل الـ ID والبيانات
+    // dispatch(updateStorySlice({ id: storyId, data: finalStoryData }))
+    //   .then(() => {
+    //     console.log(`تم تحديث القصة بنجاح. ID: ${storyId}`)
+    //     alert('تم تحديث القصة بنجاح!')
+    //   })
+    //   .catch(err => {
+    //     console.error('فشل التحديث:', err)
+    //     alert('فشل تحديث القصة.')
+    // })
+    dispatch(updateStorySlice({ id: storyId, storyData })).then(() => {
+      console.log(`تم تحديث القصة بنجاح. ID: ${storyId}`)
     })
-
-    console.log('البيانات النهائية للإرسال:', finalStoryData)
-    // منطق إرسال البيانات (finalStoryData) إلى API
-    alert('تم إرسال البيانات (تحقق من الـ Console)')
   }
 
-  if (storyApi.status === 'loading') return <div>loading...</div>
+  // **********************************************
+  //  شروط التحميل/الخطأ/عدم وجود قصة
+  // **********************************************
+  if (storyApi.status === 'loading')
+    return <div style={styles.body}>...جاري التحميل</div>
 
-  if (storyApi.error) return <div>Error: {storyApi.error}</div>
-  if (storyApi.status === 'succeeded' && currentStory) {
-    return (
-      <div>
-        <div>Story ID: {currentStory.id}</div>
-        <div>Story Title: {currentStory.title}</div>
-        <div>Story Content: {currentStory.content}</div>
-      </div>
-    )
-  }
+  if (storyApi.error)
+    return <div style={styles.body}>خطأ: {storyApi.error}</div>
 
-  // مكون فرعي لزر الرفع المخفي وتنسيق الزر المرئي
+  // إذا لم يتم تحميل قصة حالية (يجب أن يتم تحميلها قبل الوصول إلى هذه الصفحة)
+  if (!initialStory)
+    return <div style={styles.body}>الرجاء تحديد قصة لتعديلها.</div>
+
+  // **********************************************
+  // مكون فرعي لزر الرفع المخفي وتنسيق الزر المرئي (لم يتغير)
+  // **********************************************
   const FileUploadButton = ({
     label,
     accept,
@@ -349,9 +347,14 @@ export default function AddNewStoryPage () {
     </div>
   )
 
+  // **********************************************
+  //  النموذج
+  // **********************************************
   return (
     <div style={styles.body}>
+
       <div style={styles.formContainer}>
+      <ReturnHome />
         <h2
           style={{
             textAlign: 'center',
@@ -361,9 +364,9 @@ export default function AddNewStoryPage () {
             marginBottom: '25px'
           }}
         >
-          إضافة قصة جديدة{' '}
+          تعديل القصة رقم: {initialStory.id}{' '}
           <span style={{ fontSize: '1.2rem', color: '#E0E0E0' }}>
-            | Add New Story
+            | Update Story
           </span>
         </h2>
 
@@ -424,7 +427,7 @@ export default function AddNewStoryPage () {
 
           {/* رفع ملف المحتوى (Markdown/TXT) */}
           <FileUploadButton
-            label='ملف المحتوى (Markdown/TXT):'
+            label='ملف المحتوى (Markdown/TXT/DOCX):'
             accept='.md,.txt,.docx'
             onChange={handleContentFileUpload}
             contentInfo={
@@ -453,9 +456,28 @@ export default function AddNewStoryPage () {
               الصورة المصغرة (Thumbnail)
             </legend>
 
+            {/* عرض الصورة المصغرة الحالية */}
+            {initialStory.thumbnailUrl && !thumbnailFile && (
+              <div style={{ marginBottom: '10px', textAlign: 'center' }}>
+                <span style={{ fontSize: '0.9rem', color: '#B0B0B0' }}>
+                  الصورة الحالية:
+                </span>
+                <img
+                  src={initialStory.thumbnailUrl}
+                  alt='Thumbnail الحالي'
+                  style={{
+                    maxWidth: '100%',
+                    maxHeight: '100px',
+                    borderRadius: '8px',
+                    marginTop: '5px'
+                  }}
+                />
+              </div>
+            )}
+
             {/* رفع ملف صورة */}
             <FileUploadButton
-              label='1. رفع ملف صورة (JPG/PNG):'
+              label='1. رفع ملف صورة جديدة (JPG/PNG):'
               accept='image/*'
               onChange={handleThumbnailFileChange}
               contentInfo={
@@ -477,14 +499,14 @@ export default function AddNewStoryPage () {
                 name='thumbnailUrl'
                 value={storyData.thumbnailUrl}
                 onChange={handleChange}
-                onFocus={() => setThumbnailFile(null)} // إزالة الملف المرفوع عند بدء إدخال URL
+                onFocus={() => setThumbnailFile(null)}
                 style={styles.inputField}
                 placeholder='https://example.com/image.jpg'
               />
             </label>
           </fieldset>
 
-          {/* نشر/مسودة (Toggle Switch - سنستخدم Checkbox بسيط لتبسيط الكود) */}
+          {/* نشر/مسودة */}
           <div
             style={{
               display: 'flex',
@@ -501,25 +523,23 @@ export default function AddNewStoryPage () {
               name='published'
               checked={storyData.published}
               onChange={handleChange}
-              // يمكنك تطبيق أنماط لـ Toggle Switch مع مكتبات CSS مثل Tailwind أو مكونات مخصصة
               style={{
                 width: '20px',
                 height: '20px',
                 cursor: 'pointer',
-                accentColor: '#00C4FF' // لون الـ Checkbox في بعض المتصفحات
+                accentColor: '#00C4FF'
               }}
             />
           </div>
 
           {/* زر الإرسال (Submit Button) */}
           <button type='submit' style={styles.submitButton}>
-            إنشاء القصة{' '}
-            <span role='img' aria-label='rocket'>
-              🚀
+            تعديل القصة{' '}
+            <span role='img' aria-label='save'>
+              💾
             </span>
           </button>
         </form>
-        <ReturnHome />
       </div>
     </div>
   )

@@ -13,6 +13,8 @@ import MarkdownRenderer from '../../Components/MarkDown/MarkdownRenderer'
 import { useParams } from 'react-router'
 import { useAppDispatch, useAppSelector } from '@/Redux/hooks'
 import { getStoryByIdSlice } from '@/Redux/slices/storySlice'
+import ReturnHome from '@/Components/Home/ReturnHome'
+import AddComment from '@/Components/Comments/AddComment'
 
 export default function StoryReadingPage () {
   const { storyId } = useParams()
@@ -35,12 +37,15 @@ export default function StoryReadingPage () {
   return (
     <Box sx={{ maxWidth: '800px', mx: 'auto', mt: 4 }}>
       {/* Title */}
+
       <Typography variant='h4' fontWeight='bold' mb={2}>
         {story?.title}
       </Typography>
 
       {/* Likes section */}
       <Stack direction='row' spacing={2} alignItems='center' mb={3}>
+        <ReturnHome />
+
         <Typography>{story?.likes.length} Likes</Typography>
         <Button variant='contained' size='small'>
           Like
@@ -69,6 +74,8 @@ export default function StoryReadingPage () {
         {story?.comments.length === 0 && (
           <Typography>No comments yet</Typography>
         )}
+
+        <AddComment userId={1} storyId={Number(storyId)} />
 
         {story?.comments.map(c => (
           <Box

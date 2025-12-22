@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
 
 import storyReducer from './slices/storySlice'
+import commentReducer from './slices/CommentSlice'
 
 const store = configureStore({
   reducer: {
 
-      story:storyReducer
+      story: storyReducer,
+      comment: commentReducer
     }
   
   

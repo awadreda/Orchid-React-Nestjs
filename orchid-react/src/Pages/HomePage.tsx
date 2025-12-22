@@ -10,6 +10,7 @@ export default function HomePage () {
       <NavLink to='/stories'>Go to Stories</NavLink>
       <br />
       <NavLink to='/addnewstory'>Add New Story</NavLink>
+      <br />
     </>
   )
 }

@@ -1,9 +1,8 @@
 import type { CommentResponseDto } from './commentType'
 import type { LikeResponseDto } from './LikeType'
 
-export interface CreateStoryDto 
-{
-    title: string
+export interface CreateStoryDto {
+  title: string
 
   content?: string
 
@@ -15,8 +14,6 @@ export interface CreateStoryDto
 
   authorId?: number
 }
-
-
 
 // 1. واجهة الإعجاب (Like)
 export interface Like {
@@ -57,6 +54,8 @@ export interface StoryResponseDto {
   content?: string
   published: boolean
   viewCount: number
+  caption?: string
+  thumbnailUrl?: string
   createdAt: string
   updatedAt: string
   authorId?: number
@@ -65,10 +64,10 @@ export interface StoryResponseDto {
 export interface UpdateStoryDto {
   title?: string
 
-  content?: string
-
-  published?: boolean
-
+  caption: string
+  content: string
+  published: boolean
+  thumbnailUrl: string
   authorId?: number
 }
 

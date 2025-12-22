@@ -12,7 +12,7 @@ import type { StorySummaryDto } from '@/types/storyTypes'
 import { FaComment } from 'react-icons/fa'
 
 import { FcLikePlaceholder } from 'react-icons/fc'
-import { NavLink } from 'react-router'
+import { Link, NavLink } from 'react-router'
 
 interface StoryCardProps {
   storySummaryForCard: StorySummaryDto
@@ -82,8 +82,12 @@ export default function StoryCard ({ storySummaryForCard }: StoryCardProps) {
         sx={{ direction: 'ltr', justifyContent: 'flex-end', px: 2, pb: 2 }}
         className='hover:bg-gray-100'
       >
-        <Button size='small' sx={{ fontWeight: 'bold' }}>
-          مشاركة
+
+        <Button  size='small' sx={{ fontWeight: 'bold' }}>
+          <Link to={`/stories/edit/${storySummaryForCard.id}`} >
+          تعديل
+          </Link>
+
         </Button>
         <NavLink to={`/stories/${storySummaryForCard.id}`}>
           <Button size='small' sx={{ fontWeight: 'bold' }}>
