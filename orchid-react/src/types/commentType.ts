@@ -7,6 +7,7 @@ export interface CommentResponseDto {
   content: string;
   storyId: number;
   authorId: number;
+  username: string;
   createdAt: Date;
 }
 
@@ -14,6 +15,7 @@ export type CreateCommentDto = {
   content: string
   storyId: number
   authorId: number
+  username: string
 }
 
 

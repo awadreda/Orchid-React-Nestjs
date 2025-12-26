@@ -77,10 +77,14 @@ model Comment {
   content   String
   storyId   Int
   authorId  Int
+  parentCommentId Int?
   createdAt DateTime @default(now())
-  username  String
   author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   story     Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  parent   Comment? @relation("CommentHierarchy", fields: [parentCommentId], references: [id])
+  replies  Comment[] @relation("CommentHierarchy")
+
+
 }
 
 model Like {

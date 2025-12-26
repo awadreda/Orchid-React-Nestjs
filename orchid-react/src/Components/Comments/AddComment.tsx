@@ -21,20 +21,24 @@ export default function AddComment ({ storyId }: AddCommentProps) {
     const newComment: CreateCommentDto = {
       content: comment,
       storyId: storyId,
+      username:'Awad',
       authorId: 1
     }
 
     dispatch(CreateCommentSlice(newComment))
+    setComment('')
+    
   }
 
   return (
     <div>
       <label>اضف تعليق:</label>
-      <textarea
+      <textarea 
+        className='border border-gray-300 rounded-md p-2 w-full'
         value={comment}
         onChange={e => setComment(e.target.value)}
       ></textarea>
-      <button onClick={handleCommentSubmit}>ارسال</button>
+      <button className='bg-blue-700 text-white p-2 rounded-2xl' onClick={handleCommentSubmit}>ارسال</button>
     </div>
   )
 }

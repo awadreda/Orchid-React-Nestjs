@@ -3,25 +3,46 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CommentMapper } from './Mappers/comment-mapper';
+import { UserMapper } from 'src/users/Mapper/user-mapper';
 
 @Injectable()
 export class CommentService {
   constructor (private readonly _prisma: PrismaService) {}
 
-  commentMapper = new CommentMapper();
+  private commentMapper = new CommentMapper();
+  private userMapper = new UserMapper();
 
   async getAllCommentsForStory (storyId: number) {
     try {
       const commnets = await this._prisma.comment.findMany({
-        where: { storyId: storyId },
-        orderBy: { createdAt: 'desc' },
+        where: { storyId: storyId, parentCommentId: null },
+        orderBy: { createdAt: 'asc' },
+        include: {
+          replies: {
+            orderBy: { createdAt: 'asc' },
+            include: {
+              author: true,
+            },
+          },
+          author: true,
+        },
       });
-      return commnets.map(comment => this.commentMapper.toResponse(comment));
+
+      return commnets.map(comment =>
+        this.commentMapper.toResponse(
+          comment,
+          comment.replies,
+          comment.author
+            ? this.userMapper.toResponseDto(comment.author)
+            : undefined,
+        ),
+      );
     } catch (error) {
       console.error('Error fetching comments for story:', error);
       throw error;
     }
   }
+  
 
   async getCommentById (id: number) {
     try {
@@ -54,7 +75,7 @@ export class CommentService {
           content: createCommentDto.content,
           storyId: createCommentDto.storyId,
           authorId: createCommentDto.authorId,
-          username: createCommentDto.username,
+          parentCommentId: createCommentDto.parentCommentId,
         },
       });
 

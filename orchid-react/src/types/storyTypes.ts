@@ -29,6 +29,7 @@ export interface Comment {
   content: string
   storyId: number
   authorId: number
+  username: string
   createdAt: string // يُخزّن كتاريخ ISO string
 }
 
@@ -45,7 +46,7 @@ export interface StoryWithCommentsAndLikes {
   viewCount: number
   authorId: number
   likes: Like[] // مصفوفة من كائنات Like
-  comments: Comment[] // مصفوفة من كائنات Comment
+  comments: CommentResponseDto[] // مصفوفة من كائنات Comment
 }
 
 export interface StoryResponseDto {

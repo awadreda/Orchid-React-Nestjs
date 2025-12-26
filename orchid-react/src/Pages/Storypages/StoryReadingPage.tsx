@@ -15,6 +15,7 @@ import { useAppDispatch, useAppSelector } from '@/Redux/hooks'
 import { getStoryByIdSlice } from '@/Redux/slices/storySlice'
 import ReturnHome from '@/Components/Home/ReturnHome'
 import AddComment from '@/Components/Comments/AddComment'
+import CommentCard from '@/Components/Comments/CommentCard'
 
 export default function StoryReadingPage () {
   const { storyId } = useParams()
@@ -25,12 +26,16 @@ export default function StoryReadingPage () {
   const stroyApi = useAppSelector(state => state.story)
   const story = stroyApi.CurrentStory
 
+  const commentApi = useAppSelector(state => state.comment)
+  const comments = commentApi.comments
+  
+
   useEffect(() => {
     dispatch(getStoryByIdSlice(Number(storyId))).then(() => {
       setLoading(false)
       console.log('Story fetched:', story)
     })
-  }, [dispatch, storyId])
+  }, [dispatch, storyId ])
 
   if (loading) return <CircularProgress />
 
@@ -78,16 +83,7 @@ export default function StoryReadingPage () {
         <AddComment userId={1} storyId={Number(storyId)} />
 
         {story?.comments.map(c => (
-          <Box
-            key={c.id}
-            sx={{ mb: 2, p: 2, border: '1px solid #333', borderRadius: 2 }}
-          >
-            <Typography fontWeight='bold'>{c.authorId}</Typography>
-            <Typography>{c.content}</Typography>
-            <Typography variant='caption' color='gray'>
-              {c.createdAt}
-            </Typography>
-          </Box>
+          <CommentCard key={c.id} comment={c} />
         ))}
       </Box>
     </Box>

@@ -78,7 +78,6 @@ async function main () {
   await prisma.comment.create({
     data: {
       content: 'Nice story!',
-      username: 'user1',
       storyId: story1.id,
       authorId: user2.id,
     },
@@ -87,7 +86,6 @@ async function main () {
   await prisma.comment.create({
     data: {
       content: 'Thanks for sharing!',
-      username: 'admin',
       storyId: story2.id,
       authorId: user1.id,
     },
