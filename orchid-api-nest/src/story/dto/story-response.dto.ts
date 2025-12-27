@@ -1,4 +1,5 @@
 import { Like } from "@prisma/client";
+import { CommentResponseDto } from "src/comment/dto/comment-response.dto";
 
 
 export class StoryResponseDto {
@@ -14,7 +15,7 @@ export class StoryResponseDto {
   updatedAt: Date;
   authorId?: number;
   likes?: Like[];
-  comments?: Comment[];
+  comments?: CommentResponseDto[];
 }
 
 export class storySummryDto {

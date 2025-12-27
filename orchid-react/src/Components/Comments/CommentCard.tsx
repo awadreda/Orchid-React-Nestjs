@@ -1,18 +1,21 @@
 import type { CommentResponseDto } from '@/types/commentType'
-import { Box, Typography } from '@mui/material'
+import { Box, Button, ButtonGroup, Typography } from '@mui/material'
 import DeleteCommentDialog from './DeleteCommetDialog'
 import EditCommentDialog from './EidtiComment'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { ReplyItem } from './ReplyItem'
+import ReplyDialog from './ReplyDailog'
 
 interface commentCardProps {
   comment: CommentResponseDto
 }
 
 export default function CommentCard ({ comment }: commentCardProps) {
+  const [openReplies, setOpenReplies] = useState(false)
+
   useEffect(() => {
-    // This effect runs when the component mounts and when the comment prop changes
-    console.log('CommentCard mounted or comment changed:', comment)
-  }, [comment.content])
+    console.log('CommentCard mounted for comment id:', comment)
+  }, [])
 
   return (
     <Box
@@ -21,7 +24,7 @@ export default function CommentCard ({ comment }: commentCardProps) {
     >
       {/* <Typography fontWeight='bold'>{comment.authorId}</Typography> */}
       <Typography variant='subtitle2' color='gray' mb={1}>
-        @{comment.username}
+        {/* @{comment.author.name */}
       </Typography>
       <Typography>{comment.content}</Typography>
       <Typography variant='caption' color='gray'>
@@ -29,10 +32,25 @@ export default function CommentCard ({ comment }: commentCardProps) {
           ? comment.createdAt.toLocaleString()
           : new Date(comment.createdAt).toLocaleString()}
       </Typography>
-
+      <ReplyDialog comment={comment} />
       <EditCommentDialog comment={comment} />
-
       <DeleteCommentDialog comment={comment} />
+
+      {comment.replies && comment.replies.length > 0 && (
+        <button onClick={() => setOpenReplies(!openReplies)}>
+          {openReplies
+            ? 'Hide Replies'
+            : `View Replies (${comment.replies.length})`}
+        </button>
+      )}
+
+      {openReplies && (
+        <Box sx={{ mt: 2, pl: 2, borderLeft: '1px solid #ccc' }}>
+          {comment.replies.map(reply => (
+            <ReplyItem key={reply.id} reply={reply} />
+          ))}
+        </Box>
+      )}
     </Box>
   )
 }

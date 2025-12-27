@@ -69,7 +69,18 @@ export class StoryService {
         where: { id },
         include: {
           likes: true,
-          comments: true,
+          comments: {
+            include: {
+              author: true,
+              replies: {
+                include: {
+                  author: true,
+                },
+              },
+            },
+          },
+
+          author: true,
         },
       });
 
