@@ -1,6 +1,7 @@
 import type {
   CreateUserDto,
   UpdateUserDto,
+  UserDashboardDto,
   UserResponseDto
 } from '@/types/UserTypes'
 import axios from 'axios'
@@ -31,6 +32,30 @@ export const getUserByIdApi = async (
     return response.data
   } catch (error) {
     console.error(`Error fetching user by ID ${id}:`, error)
+    throw error
+  }
+}
+
+export const getUsersDashboardDataApi = async (): Promise<
+  UserDashboardDto[] | null
+> => {
+  try {
+    const response = await Api.get<UserDashboardDto[]>(`/usersdashboard`)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching users dashboard data:', error)
+    throw error
+  }
+}
+
+export const getUserDashboardDataByID = async (
+  id: number
+): Promise<UserDashboardDto | null> => {
+  try {
+    const response = await Api.get<UserDashboardDto>(`/usersdashboard/${id}`)
+    return response.data
+  } catch (error) {
+    console.error(`Error fetching user dashboard data for ID ${id}:`, error)
     throw error
   }
 }

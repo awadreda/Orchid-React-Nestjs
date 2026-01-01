@@ -1,7 +1,8 @@
 import type {
   UserResponseDto,
   UpdateUserDto,
-  CreateUserDto
+  CreateUserDto,
+  UserDashboardDto
 } from '@/types/UserTypes'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import {
@@ -17,14 +18,21 @@ interface userState {
   status: 'idle' | 'loading' | 'succeeded' | 'failed'
   error: string | null
   user: UserResponseDto | null
+  usersDashboard: UserDashboardDto[] | null
+  userDashboard: UserDashboardDto | null
 }
 
 const initialState: userState = {
   users: [],
   status: 'idle',
   error: null,
-  user: null
+  user: null,
+  usersDashboard: null,
+  userDashboard: null
 }
+
+
+
 
 export const deleteUserSlice = createAsyncThunk(
   '/deleteuser',

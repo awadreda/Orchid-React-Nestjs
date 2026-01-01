@@ -14,12 +14,14 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserResponseDto } from './dto/user-response.dto';
+import { UserDashboardDto, UserResponseDto } from './dto/user-response.dto';
+import { ApiOkResponse, getSchemaPath } from '@nestjs/swagger';
 
 @Controller('user')
 export class UsersController {
   constructor (private readonly usersService: UsersService) {}
 
+  @ApiOkResponse({ type: [UserResponseDto] })
   @Get('allusers')
   async GetAllUsers (): Promise<UserResponseDto[] | { message: string }> {
     const users = await this.usersService.getUsers();
@@ -30,6 +32,7 @@ export class UsersController {
     return users;
   }
 
+  @ApiOkResponse({ type: UserResponseDto })
   @Get('userbyid/:id')
   async GetUserById (
     @Param('id') id: string,
@@ -46,6 +49,33 @@ export class UsersController {
     }
 
     return user;
+  }
+
+  @ApiOkResponse({ type: [UserDashboardDto] })
+  @Get('usersdashboard')
+  async GetUsersDashboard (): Promise<UserDashboardDto[]> {
+    return this.usersService.getUsersDashboardData();
+  }
+
+  @ApiOkResponse({ type: UserDashboardDto })
+  @Get('userdashboard/:id')
+  async GetUserDashboard (
+    @Param('id') id: string,
+  ): Promise<UserDashboardDto | { message: string }> {
+    if (isNaN(parseInt(id))) {
+      return { message: 'Invalid user ID' };
+    }
+
+    const idNum = parseInt(id);
+    const dashboardData = await this.usersService.getUserDashboardDataByID(
+      idNum,
+    );
+
+    if (!dashboardData) {
+      return { message: 'User not found' };
+    }
+
+    return dashboardData;
   }
 
   @Post('createuser')

@@ -141,21 +141,25 @@ export class StoryService {
     dto: CreateStoryDto,
   ): Promise<StoryResponseDto | { message: string }> {
     try {
-      if (!(await this._userService.isUserExist(dto.authorId)))
-        return { message: ' the author not found' };
-      const story = await this._prisma.story.create({
-        data: {
-          title: dto.title,
-          content: dto.content,
-          published: dto.published ?? false,
-          thumbnailUrl: dto.thumbnailUrl ?? null,
-          caption: dto.caption ?? null,
-          authorId: dto.authorId ?? null,
-          createdAt: new Date(),
-        },
-      });
+      if (dto.authorId) {
+        if (!(await this._userService.isUserExist(dto.authorId)))
+          return { message: ' the author not found' };
+        const story = await this._prisma.story.create({
+          data: {
+            title: dto.title,
+            content: dto.content,
+            published: dto.published ?? false,
+            thumbnailUrl: dto.thumbnailUrl ?? null,
+            caption: dto.caption ?? null,
+            authorId: dto.authorId ?? null,
+            createdAt: new Date(),
+          },
+        });
 
-      return this.storyMapper.toStoryResponse(story);
+        return this.storyMapper.toStoryResponse(story);
+      } else {
+        return { message: 'Author not found' };
+      }
     } catch (error) {
       console.error('Error creating story:', error);
       throw error;

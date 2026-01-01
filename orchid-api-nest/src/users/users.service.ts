@@ -3,21 +3,39 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
-import { UserResponseDto } from './dto/user-response.dto';
+import { UserDashboardDto, UserResponseDto } from './dto/user-response.dto';
 import { UserMapper } from './Mapper/user-mapper';
+import { CommentMapper } from 'src/comment/Mappers/comment-mapper';
+import { StoryMapper } from 'src/story/Mapper/stroy-mapper';
+import { LikeMapper } from 'src/like/Mappers/like-mapper';
 
 @Injectable()
 export class UsersService {
   constructor (private readonly _prisma: PrismaService) {}
 
   private userMapper = new UserMapper();
+  private commentMapper = new CommentMapper();
+  private storyMapper = new StoryMapper();
+  private likeMapper = new LikeMapper();
 
   async getUsers (): Promise<UserResponseDto[]> {
     try {
-      const users = await this._prisma.user.findMany();
+      const users = await this._prisma.user.findMany({
+        include: {
+          comments: true,
+          likes: true,
+          stories: true,
+        },
+        orderBy: { createdAt: 'desc' },
+      });
 
       const mappedUsers = users.map(user =>
-        this.userMapper.toResponseDto(user),
+        this.userMapper.toResponseDto(
+          user,
+          user.comments.map(comment => this.commentMapper.toResponse(comment)),
+          user.likes.map(like => this.likeMapper.toResponse(like)),
+          user.stories.map(story => this.storyMapper.toStoryResponse(story)),
+        ),
       );
 
       return mappedUsers;
@@ -31,26 +49,85 @@ export class UsersService {
     try {
       const user = await this._prisma.user.findUnique({
         where: { id },
+        include: {
+          comments: true,
+          likes: true,
+          stories: true,
+        },
       });
       if (!user) {
         return null;
       }
 
-      return this.userMapper.toResponseDto(user);
+      return this.userMapper.toResponseDto(
+        user,
+        user.comments.map(comment => this.commentMapper.toResponse(comment)),
+        user.likes.map(like => this.likeMapper.toResponse(like)),
+        user.stories.map(story => this.storyMapper.toStoryResponse(story)),
+      );
     } catch (error) {
       console.error('Error fetching user by ID:', error);
       throw error;
     }
   }
 
-  async isUserExist (id): Promise<boolean> {
-    const user = await this._prisma.user.findUnique({
-      where: { id },
-    });
-    if (!user) {
-      return false;
+  async getUsersDashboardData (): Promise<UserDashboardDto[]> {
+    try {
+      const users = await this._prisma.user.findMany({
+        include: {
+          comments: true,
+          likes: true,
+          stories: true,
+        },
+      });
+
+      return users.map(user => {
+        const storiesCount = user.stories?.length ?? 0;
+        const commentsCount = user.comments?.length ?? 0;
+
+        return this.userMapper.toUserDashboardDto(
+          user,
+          storiesCount,
+          commentsCount,
+        );
+      });
+    } catch (error) {
+      console.error('Error fetching users dashboard data:', error);
+      throw error;
     }
-    return true;
+  }
+  
+  
+
+  async getUserDashboardDataByID (id: number): Promise<UserDashboardDto | null> {
+    try {
+      const user = await this._prisma.user.findUnique({
+        where: { id },
+        include: {
+          comments: true,
+          likes: true,
+          stories: true,
+        },
+      });
+      if (!user) {
+        return null;
+      }
+      const storiesCount = user.stories?.length ?? 0;
+      const commentsCount = user.comments?.length ?? 0;
+
+      return this.userMapper.toUserDashboardDto(
+        user,
+        storiesCount,
+        commentsCount,
+      );
+    } catch (error) {
+      console.error('Error fetching user dashboard data:', error);
+      throw error;
+    }
+  }
+
+  isUserExist (id: number): Promise<boolean> {
+    return this._prisma.user.findUnique({ where: { id } }).then(user => !!user);
   }
 
   async createUser (
@@ -66,7 +143,7 @@ export class UsersService {
           createdAt: new Date(),
         },
       });
-      return this.userMapper.toResponseDto(newUser);
+      return this.userMapper.toSampleResponse(newUser);
     } catch (error) {
       console.error('Error creating user:', error);
       throw error;
@@ -86,7 +163,7 @@ export class UsersService {
       if (!updatedUser) {
         return null;
       }
-      return this.userMapper.toResponseDto(updatedUser);
+      return this.userMapper.toSampleResponse(updatedUser);
     } catch (error) {
       console.error('Error updating user:', error);
       throw error;
@@ -107,7 +184,7 @@ export class UsersService {
 
       return {
         message: 'User deleted successfully',
-        user: this.userMapper.toResponseDto(user),
+        user: this.userMapper.toSampleResponse(user),
       };
     } catch (error) {
       console.error('Error deleting user:', error);
