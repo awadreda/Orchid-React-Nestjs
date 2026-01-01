@@ -1,3 +1,7 @@
+import type { CommentResponseDto } from "./commentType"
+import type { LikeResponseDto } from "./LikeType"
+import type { StoryResponseDto } from "./storyTypes"
+
 export interface CreateUserDto {
   email: string
 
@@ -19,10 +23,14 @@ export interface UpdateUserDto {
 }
 
 export interface UserResponseDto {
-  id: number
-  email: string
-  name?: string
-  image?: string
-  role: string
-  createdAt: Date
+    id: number;
+  email: string;
+  name?: string;
+  emailVerified?: Date;
+  image?: string;
+  role: string;
+  createdAt: Date;
+  comments?: CommentResponseDto[];
+  likes?: LikeResponseDto[];
+  stories?: StoryResponseDto[];
 }
