@@ -6,6 +6,9 @@ import StoryReadingPage from '@/Pages/Storypages/StoryReadingPage'
 import AddNewStoryPage from '@/Pages/Storypages/AddNewStoryPage'
 import UpdateStoryPage from '@/Pages/Storypages/UpdateStoryPage'
 
+import UsersTable from '@/Pages/UsersPages/Userstable'
+import UserInfoPage from '@/Pages/UsersPages/UserInfoPage'
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -19,10 +22,18 @@ const router = createBrowserRouter([
   {
     path: '/addnewstory',
     Component: AddNewStoryPage
+  },
+  {
+    path: `/stories/edit/:storyId`,
+    Component: UpdateStoryPage
+  },
+  {
+    path: '/usersTable',
+    Component: UsersTable
   }
   ,{
-    path:`/stories/edit/:storyId`,
-    Component:UpdateStoryPage
+    path: '/users/:userId',
+    Component: UserInfoPage
   }
 ])
 

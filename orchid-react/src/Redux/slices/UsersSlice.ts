@@ -10,7 +10,8 @@ import {
   updateUserApi,
   createUserApi,
   getUserByIdApi,
-  getUsersApi
+  getUsersApi,
+  getUsersDashboardDataApi
 } from '../apis/UsersApi'
 
 interface userState {
@@ -32,7 +33,42 @@ const initialState: userState = {
 }
 
 
+export const getUsersDashboardSlice = createAsyncThunk(
+  '/users/dashboard',
+  async (): Promise<UserDashboardDto[] | null> => {
+    const response = await getUsersDashboardDataApi()
+    return response
+  }
+)
 
+
+
+
+
+
+//getUsers
+
+export const getUsersSlice = createAsyncThunk 
+(
+  '/users',
+  async (): Promise<UserResponseDto[]> => {
+    const response = await getUsersApi()
+    return response
+  }
+)
+
+
+//getUserById
+
+export const getUserByIdSlice = createAsyncThunk(
+  '/userbyid',
+  async (id: number): Promise<UserResponseDto | null> => {
+    const response = await getUserByIdApi(id)
+    return response
+  }
+)
+
+//deleteUser
 
 export const deleteUserSlice = createAsyncThunk(
   '/deleteuser',
@@ -42,6 +78,7 @@ export const deleteUserSlice = createAsyncThunk(
   }
 )
 
+//updateUser
 export const updateUserSlice = createAsyncThunk(
   '/updateuser',
   async ({
@@ -56,6 +93,7 @@ export const updateUserSlice = createAsyncThunk(
   }
 )
 
+//createUser
 export const createUserSlice = createAsyncThunk(
   '/createuser',
   async (createUserDto: CreateUserDto): Promise<UserResponseDto | null> => {
@@ -64,27 +102,15 @@ export const createUserSlice = createAsyncThunk(
   }
 )
 
-export const getUserByIdSlice = createAsyncThunk(
-  '/userbyid',
-  async (id: number): Promise<UserResponseDto | null> => {
-    const response = await getUserByIdApi(id)
-    return response
-  }
-)
 
-export const getUsersSlice = createAsyncThunk(
-  '/users',
-  async (): Promise<UserResponseDto[]> => {
-    const response = await getUsersApi()
-    return response
-  }
-)
+
 
 const userSlice = createSlice({
   name: 'user',
   initialState: initialState,
   reducers: {},
   extraReducers: builder => {
+    //deleteUser
     builder.addCase(deleteUserSlice.pending, state => {
       state.status = 'loading'
     })
@@ -98,6 +124,8 @@ const userSlice = createSlice({
       state.status = 'failed'
       state.error = action.error.message || 'Failed to delete user'
     })
+
+    //updateUser
 
     builder.addCase(updateUserSlice.pending, state => {
       state.status = 'loading'
@@ -116,6 +144,7 @@ const userSlice = createSlice({
       state.error = action.error.message || 'Failed to update user'
     })
 
+    //createUser
     builder.addCase(createUserSlice.pending, state => {
       state.status = 'loading'
     })
@@ -130,6 +159,7 @@ const userSlice = createSlice({
       state.error = action.error.message || 'Failed to create user'
     })
 
+    //getUserById
     builder.addCase(getUserByIdSlice.pending, state => {
       state.status = 'loading'
     })
@@ -142,6 +172,7 @@ const userSlice = createSlice({
       state.error = action.error.message || 'Failed to get user by ID'
     })
 
+    //getUsers
     builder.addCase(getUsersSlice.pending, state => {
       state.status = 'loading'
     })
@@ -153,6 +184,20 @@ const userSlice = createSlice({
       state.status = 'failed'
       state.error = action.error.message || 'Failed to get users'
     })
+
+    //getUsersDashboard
+    builder.addCase(getUsersDashboardSlice.pending, state => {
+      state.status = 'loading'
+    })
+    builder.addCase(getUsersDashboardSlice.fulfilled, (state, action) => {
+      state.status = 'succeeded'
+      state.usersDashboard = action.payload
+    })
+    builder.addCase(getUsersDashboardSlice.rejected, (state, action) => {
+      state.status = 'failed'
+      state.error = action.error.message || 'Failed to get users dashboard'
+    })
+
   }
 })
 
