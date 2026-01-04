@@ -33,7 +33,7 @@ export class CommentService {
           comment,
           comment.replies,
           comment.author
-            ? this.userMapper.toResponseDto(comment.author)
+            ? this.userMapper.toSampleResponse(comment.author)
             : undefined,
         ),
       );

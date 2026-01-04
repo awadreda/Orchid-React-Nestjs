@@ -11,6 +11,9 @@ export default function HomePage () {
       <br />
       <NavLink to='/addnewstory'>Add New Story</NavLink>
       <br />
+      <NavLink to='/usersTable'>Users Table</NavLink>
+      <br />
+      <NavLink to='/users/u123'>User Info</NavLink>
     </>
   )
 }

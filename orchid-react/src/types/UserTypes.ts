@@ -1,3 +1,7 @@
+import type { CommentResponseDto } from './commentType'
+import type { LikeResponseDto } from './LikeType'
+import type { StoryResponseDto, StoryWithCommentsAndLikes } from './storyTypes'
+
 export interface CreateUserDto {
   email: string
 
@@ -22,7 +26,27 @@ export interface UserResponseDto {
   id: number
   email: string
   name?: string
+  emailVerified?: Date
   image?: string
   role: string
   createdAt: Date
+  comments?: CommentResponseDto[]
+  likes?: LikeResponseDto[]
+  stories?: StoryWithCommentsAndLikes[]
+}
+
+export interface UserDashboardDto {
+  id: number
+
+  email: string
+
+  name?: string
+
+  role: string
+
+  createdAt: Date
+
+  storiesCount: number
+
+  commentsCount: number
 }

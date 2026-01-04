@@ -18,7 +18,10 @@ import { useAppDispatch, useAppSelector } from '@/Redux/hooks'
 import { getUserByIdSlice } from '@/Redux/slices/UsersSlice'
 import LoadingSpinner from '@/Components/RoutingComponents/LoadingSpinner'
 import ErrorMessage from '@/Components/RoutingComponents/ErrorMessage'
-import type { StoryResponseDto, StoryWithCommentsAndLikes } from '@/types/storyTypes'
+import type {
+  StoryResponseDto,
+  StoryWithCommentsAndLikes
+} from '@/types/storyTypes'
 import type { CommentResponseDto } from '@/types/commentType'
 import CommentsTab from '@/Components/Users/UserInfoPageComponents/CommentsTap'
 import StoriesTab from '@/Components/Users/UserInfoPageComponents/StoriesTab'
@@ -196,6 +199,3 @@ function StatCard ({ title, value }: { title: string; value: number }) {
     </Card>
   )
 }
-
-
-

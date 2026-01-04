@@ -13,11 +13,13 @@ import { CreateStoryDto } from './dto/create-story.dto';
 import { UpdateStoryDto } from './dto/update-story.dto';
 import { StoryResponseDto, storySummryDto } from './dto/story-response.dto';
 import { Story } from '@prisma/client';
+import { ApiOkResponse } from '@nestjs/swagger';
 
 @Controller('story')
 export class StoryController {
   constructor (private readonly storyService: StoryService) {}
 
+  @ApiOkResponse({ type: [StoryResponseDto] })
   @Get('allstories')
   async getAllStories (): Promise<StoryResponseDto[] | { message: string }> {
     const stories = await this.storyService.getAllStories();
@@ -29,7 +31,7 @@ export class StoryController {
   }
 
   //Get stories summary
-
+  @ApiOkResponse({ type: [storySummryDto] })
   @Get('storiessummary')
   async getStoriesSummary (): Promise<storySummryDto[] | { message: string }> {
     const stories = await this.storyService.getStoriesSummary();
@@ -42,6 +44,7 @@ export class StoryController {
 
   //Get story summry by id
 
+  @ApiOkResponse({ type: storySummryDto })
   @Get('storysummarybyid/:id')
   async getStorySummaryById (
     @Param('id') id: string,
