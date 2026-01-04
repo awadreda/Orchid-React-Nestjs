@@ -24,7 +24,13 @@ export class UsersService {
         include: {
           comments: true,
           likes: true,
-          stories: true,
+          stories: {
+            include: {
+              comments: true,
+              likes: true,
+              author: true,
+            },
+          },
         },
         orderBy: { createdAt: 'desc' },
       });
@@ -34,7 +40,18 @@ export class UsersService {
           user,
           user.comments.map(comment => this.commentMapper.toResponse(comment)),
           user.likes.map(like => this.likeMapper.toResponse(like)),
-          user.stories.map(story => this.storyMapper.toStoryResponse(story)),
+          user.stories.map(story =>
+            this.storyMapper.toStoryResponse(
+              story,
+              story.comments.map(comment =>
+                this.commentMapper.toResponse(comment),
+              ),
+              story.likes.map(like => this.likeMapper.toResponse(like)),
+              story.author
+                ? this.userMapper.toSampleResponse(story.author)
+                : null,
+            ),
+          ),
         ),
       );
 
@@ -52,7 +69,13 @@ export class UsersService {
         include: {
           comments: true,
           likes: true,
-          stories: true,
+          stories: {
+            include: {
+              author: true,
+              comments: true,
+              likes: true,
+            },
+          },
         },
       });
       if (!user) {
@@ -63,7 +86,18 @@ export class UsersService {
         user,
         user.comments.map(comment => this.commentMapper.toResponse(comment)),
         user.likes.map(like => this.likeMapper.toResponse(like)),
-        user.stories.map(story => this.storyMapper.toStoryResponse(story)),
+        user.stories.map(story =>
+          this.storyMapper.toStoryResponse(
+            story,
+            story.comments.map(comment =>
+              this.commentMapper.toResponse(comment),
+            ),
+            story.likes.map(like => this.likeMapper.toResponse(like)),
+            story.author
+              ? this.userMapper.toSampleResponse(story.author)
+              : null,
+          ),
+        ),
       );
     } catch (error) {
       console.error('Error fetching user by ID:', error);
@@ -96,8 +130,6 @@ export class UsersService {
       throw error;
     }
   }
-  
-  
 
   async getUserDashboardDataByID (id: number): Promise<UserDashboardDto | null> {
     try {

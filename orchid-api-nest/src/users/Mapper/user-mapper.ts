@@ -20,6 +20,7 @@ export class UserMapper {
       image: user.image || '',
       role: user.role,
       createdAt: user.createdAt,
+
       comments: comments || [],
       likes: likes || [],
       stories: stories || [],

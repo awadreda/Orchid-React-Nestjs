@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Like } from '@prisma/client';
 import { CommentResponseDto } from 'src/comment/dto/comment-response.dto';
 import { LikeResponseDto } from 'src/like/dto/LikeResponseDto';
+import { UserResponseDto } from 'src/users/dto/user-response.dto';
 
 export class StoryResponseDto {
   @ApiProperty({ type: Number })
@@ -25,6 +26,8 @@ export class StoryResponseDto {
   updatedAt: Date;
   @ApiProperty({ type: Number })
   authorId?: number;
+  @ApiProperty({ type: () => UserResponseDto })
+  author?: UserResponseDto;
   @ApiProperty({ type: () => [LikeResponseDto] })
   likes?: LikeResponseDto[];
   @ApiProperty({ type: () => [CommentResponseDto] })

@@ -156,7 +156,7 @@ export class StoryService {
           },
         });
 
-        return this.storyMapper.toStoryResponse(story);
+        return this.storyMapper.toStoryResponse(story, [], [], null);
       } else {
         return { message: 'Author not found' };
       }

@@ -1,9 +1,18 @@
 import { Story } from '@prisma/client';
 import { StoryResponseDto } from '../dto/story-response.dto';
+import { CommentResponseDto } from 'src/comment/dto/comment-response.dto';
+import { LikeResponseDto } from 'src/like/dto/LikeResponseDto';
+import { UserResponseDto } from 'src/users/dto/user-response.dto';
+import { response } from 'express';
 
 export class StoryMapper {
   // Convert one Story object to StoryResponseDto
-  toStoryResponse (story: Story): StoryResponseDto {
+  toStoryResponse (
+    story: Story,
+    comments: CommentResponseDto[] = [],
+    likes: LikeResponseDto[] = [],
+    author: UserResponseDto | null = null,
+  ): StoryResponseDto {
     return {
       id: story.id,
       createdAt: story.createdAt,
@@ -14,10 +23,14 @@ export class StoryMapper {
       published: story.published,
       viewCount: story.viewCount,
       authorId: story.authorId || undefined,
+      caption: story.caption || '',
+      // الجديد:
+      author: author ? author : undefined,
+      likes: likes,
+      comments: comments,
     };
   }
 
-  // to story summary dto
   // to story summary dto
   toStorySummaryDto (story: Story, likesCount: number, commentsCount: number) {
     return {
@@ -49,6 +62,6 @@ export class StoryMapper {
 
   // Convert array -> list of StoryResponseDto
   toStoryResponseList (stories: Story[]): StoryResponseDto[] {
-    return stories.map(story => this.toStoryResponse(story));
+    return stories.map(story => this.toStoryResponse(story, [], [], null));
   }
 }
