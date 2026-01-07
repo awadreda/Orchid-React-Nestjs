@@ -90,6 +90,21 @@ export class UsersController {
     return user;
   }
 
+  @Post('createListUsers')
+  @HttpCode(201)
+  async CreateListUsers (
+    @Body() createUserDtos: CreateUserDto[],
+  ): Promise<UserResponseDto[] | { message: string }> {
+    for (const createUserDto of createUserDtos) {
+      const user = await this.usersService.createUser(createUserDto);
+      if (!user) {
+        return { message: 'Users not created' };
+      }
+
+    }
+    return { message: 'Users created successfully' };
+  }
+
   @Put('updateuser/:id')
   async UpdateUser (
     @Param('id') id: string,

@@ -18,6 +18,10 @@ import { FaInfoCircle, FaEdit } from 'react-icons/fa'
 import { MdDelete } from 'react-icons/md'
 
 import { NavLink } from 'react-router'
+import { Loader } from 'lucide-react'
+import LoadingSpinner from '@/Components/RoutingComponents/LoadingSpinner'
+import ErrorMessage from '@/Components/RoutingComponents/ErrorMessage'
+import DeleteUserDialog from '@/Components/Users/Dialog/DeleteUserDialog'
 
 interface Column {
   id: keyof UserDashboardDto | 'actions'
@@ -35,188 +39,188 @@ const columns: readonly Column[] = [
   { id: 'actions', label: 'Actions', minWidth: 120, align: 'center' }
 ]
 
-const usersDashboardDemo = [
-  {
-    id: 1,
-    email: 'ahmed.ali@example.com',
-    name: 'Ahmed Ali',
-    role: 'admin',
-    createdAt: new Date('2023-01-15'),
-    storiesCount: 24,
-    commentsCount: 156
-  },
-  {
-    id: 2,
-    email: 'sara.smith@provider.net',
-    name: 'Sara Smith',
-    role: 'editor',
-    createdAt: new Date('2023-02-10'),
-    storiesCount: 45,
-    commentsCount: 89
-  },
-  {
-    id: 3,
-    email: 'user34@gmail.com',
-    name: 'undefined',
-    role: 'user',
-    createdAt: new Date('2023-03-05'),
-    storiesCount: 2,
-    commentsCount: 12
-  },
-  {
-    id: 4,
-    email: 'mohamed.hassan@company.com',
-    name: 'Mohamed Hassan',
-    role: 'moderator',
-    createdAt: new Date('2023-03-20'),
-    storiesCount: 0,
-    commentsCount: 432
-  },
-  {
-    id: 5,
-    email: 'laila.noor@outlook.com',
-    name: 'Laila Noor',
-    role: 'user',
-    createdAt: new Date('2023-04-12'),
-    storiesCount: 8,
-    commentsCount: 25
-  },
-  {
-    id: 6,
-    email: 'john.doe@test.io',
-    name: 'John Doe',
-    role: 'editor',
-    createdAt: new Date('2023-05-01'),
-    storiesCount: 112,
-    commentsCount: 34
-  },
-  {
-    id: 7,
-    email: 'fatima.z@web.com',
-    name: 'Fatima Zahra',
-    role: 'user',
-    createdAt: new Date('2023-05-18'),
-    storiesCount: 1,
-    commentsCount: 5
-  },
-  {
-    id: 8,
-    email: 'alex.king@domain.com',
-    name: 'undefined',
-    role: 'user',
-    createdAt: new Date('2023-06-22'),
-    storiesCount: 0,
-    commentsCount: 0
-  },
-  {
-    id: 9,
-    email: 'omar.farouk@service.com',
-    name: 'Omar Farouk',
-    role: 'admin',
-    createdAt: new Date('2023-07-04'),
-    storiesCount: 15,
-    commentsCount: 88
-  },
-  {
-    id: 10,
-    email: 'mira.aden@agency.org',
-    name: 'Mira Aden',
-    role: 'editor',
-    createdAt: new Date('2023-07-30'),
-    storiesCount: 67,
-    commentsCount: 210
-  },
-  {
-    id: 11,
-    email: 'khalid.walid@blog.com',
-    name: 'Khalid Walid',
-    role: 'user',
-    createdAt: new Date('2023-08-14'),
-    storiesCount: 4,
-    commentsCount: 19
-  },
-  {
-    id: 12,
-    email: 'hoda.m@provider.net',
-    name: 'Hoda Mansour',
-    role: 'moderator',
-    createdAt: new Date('2023-09-02'),
-    storiesCount: 0,
-    commentsCount: 567
-  },
-  {
-    id: 13,
-    email: 'ryan.gos@cinema.com',
-    name: 'Ryan G.',
-    role: 'user',
-    createdAt: new Date('2023-09-25'),
-    storiesCount: 12,
-    commentsCount: 3
-  },
-  {
-    id: 14,
-    email: 'amina.test@test.com',
-    name: 'undefined',
-    role: 'user',
-    createdAt: new Date('2023-10-10'),
-    storiesCount: 0,
-    commentsCount: 1
-  },
-  {
-    id: 15,
-    email: 'youssef.b@startup.io',
-    name: 'Youssef Bekhit',
-    role: 'editor',
-    createdAt: new Date('2023-11-05'),
-    storiesCount: 33,
-    commentsCount: 76
-  },
-  {
-    id: 16,
-    email: 'nour.eliman@faith.org',
-    name: 'Nour El-Iman',
-    role: 'user',
-    createdAt: new Date('2023-11-20'),
-    storiesCount: 7,
-    commentsCount: 44
-  },
-  {
-    id: 17,
-    email: 'sam.altman@future.ai',
-    name: 'Sam Altman',
-    role: 'admin',
-    createdAt: new Date('2023-12-01'),
-    storiesCount: 102,
-    commentsCount: 1200
-  },
-  {
-    id: 18,
-    email: 'zane.malik@music.com',
-    name: 'Zane Malik',
-    role: 'user',
-    createdAt: new Date('2023-12-15'),
-    storiesCount: 0,
-    commentsCount: 28
-  },
-  {
-    id: 19,
-    email: 'dina.khaled@web.me',
-    name: 'Dina Khaled',
-    role: 'moderator',
-    createdAt: new Date('2023-12-28'),
-    storiesCount: 3,
-    commentsCount: 890
-  },
-  {
-    id: 20,
-    email: 'guest.user@temp.com',
-    name: 'Guest User',
-    role: 'user',
-    createdAt: new Date('2024-01-02'),
-    storiesCount: 1,
-    commentsCount: 2
-  }
-]
+// const usersDashboard = [
+//   {
+//     id: 1,
+//     email: 'ahmed.ali@example.com',
+//     name: 'Ahmed Ali',
+//     role: 'admin',
+//     createdAt: new Date('2023-01-15'),
+//     storiesCount: 24,
+//     commentsCount: 156
+//   },
+//   {
+//     id: 2,
+//     email: 'sara.smith@provider.net',
+//     name: 'Sara Smith',
+//     role: 'editor',
+//     createdAt: new Date('2023-02-10'),
+//     storiesCount: 45,
+//     commentsCount: 89
+//   },
+//   {
+//     id: 3,
+//     email: 'user34@gmail.com',
+//     name: 'undefined',
+//     role: 'user',
+//     createdAt: new Date('2023-03-05'),
+//     storiesCount: 2,
+//     commentsCount: 12
+//   },
+//   {
+//     id: 4,
+//     email: 'mohamed.hassan@company.com',
+//     name: 'Mohamed Hassan',
+//     role: 'moderator',
+//     createdAt: new Date('2023-03-20'),
+//     storiesCount: 0,
+//     commentsCount: 432
+//   },
+//   {
+//     id: 5,
+//     email: 'laila.noor@outlook.com',
+//     name: 'Laila Noor',
+//     role: 'user',
+//     createdAt: new Date('2023-04-12'),
+//     storiesCount: 8,
+//     commentsCount: 25
+//   },
+//   {
+//     id: 6,
+//     email: 'john.doe@test.io',
+//     name: 'John Doe',
+//     role: 'editor',
+//     createdAt: new Date('2023-05-01'),
+//     storiesCount: 112,
+//     commentsCount: 34
+//   },
+//   {
+//     id: 7,
+//     email: 'fatima.z@web.com',
+//     name: 'Fatima Zahra',
+//     role: 'user',
+//     createdAt: new Date('2023-05-18'),
+//     storiesCount: 1,
+//     commentsCount: 5
+//   },
+//   {
+//     id: 8,
+//     email: 'alex.king@domain.com',
+//     name: 'undefined',
+//     role: 'user',
+//     createdAt: new Date('2023-06-22'),
+//     storiesCount: 0,
+//     commentsCount: 0
+//   },
+//   {
+//     id: 9,
+//     email: 'omar.farouk@service.com',
+//     name: 'Omar Farouk',
+//     role: 'admin',
+//     createdAt: new Date('2023-07-04'),
+//     storiesCount: 15,
+//     commentsCount: 88
+//   },
+//   {
+//     id: 10,
+//     email: 'mira.aden@agency.org',
+//     name: 'Mira Aden',
+//     role: 'editor',
+//     createdAt: new Date('2023-07-30'),
+//     storiesCount: 67,
+//     commentsCount: 210
+//   },
+//   {
+//     id: 11,
+//     email: 'khalid.walid@blog.com',
+//     name: 'Khalid Walid',
+//     role: 'user',
+//     createdAt: new Date('2023-08-14'),
+//     storiesCount: 4,
+//     commentsCount: 19
+//   },
+//   {
+//     id: 12,
+//     email: 'hoda.m@provider.net',
+//     name: 'Hoda Mansour',
+//     role: 'moderator',
+//     createdAt: new Date('2023-09-02'),
+//     storiesCount: 0,
+//     commentsCount: 567
+//   },
+//   {
+//     id: 13,
+//     email: 'ryan.gos@cinema.com',
+//     name: 'Ryan G.',
+//     role: 'user',
+//     createdAt: new Date('2023-09-25'),
+//     storiesCount: 12,
+//     commentsCount: 3
+//   },
+//   {
+//     id: 14,
+//     email: 'amina.test@test.com',
+//     name: 'undefined',
+//     role: 'user',
+//     createdAt: new Date('2023-10-10'),
+//     storiesCount: 0,
+//     commentsCount: 1
+//   },
+//   {
+//     id: 15,
+//     email: 'youssef.b@startup.io',
+//     name: 'Youssef Bekhit',
+//     role: 'editor',
+//     createdAt: new Date('2023-11-05'),
+//     storiesCount: 33,
+//     commentsCount: 76
+//   },
+//   {
+//     id: 16,
+//     email: 'nour.eliman@faith.org',
+//     name: 'Nour El-Iman',
+//     role: 'user',
+//     createdAt: new Date('2023-11-20'),
+//     storiesCount: 7,
+//     commentsCount: 44
+//   },
+//   {
+//     id: 17,
+//     email: 'sam.altman@future.ai',
+//     name: 'Sam Altman',
+//     role: 'admin',
+//     createdAt: new Date('2023-12-01'),
+//     storiesCount: 102,
+//     commentsCount: 1200
+//   },
+//   {
+//     id: 18,
+//     email: 'zane.malik@music.com',
+//     name: 'Zane Malik',
+//     role: 'user',
+//     createdAt: new Date('2023-12-15'),
+//     storiesCount: 0,
+//     commentsCount: 28
+//   },
+//   {
+//     id: 19,
+//     email: 'dina.khaled@web.me',
+//     name: 'Dina Khaled',
+//     role: 'moderator',
+//     createdAt: new Date('2023-12-28'),
+//     storiesCount: 3,
+//     commentsCount: 890
+//   },
+//   {
+//     id: 20,
+//     email: 'guest.user@temp.com',
+//     name: 'Guest User',
+//     role: 'user',
+//     createdAt: new Date('2024-01-02'),
+//     storiesCount: 1,
+//     commentsCount: 2
+//   }
+// ]
 
 // export interface UserRow {
 //   id: number
@@ -230,13 +234,13 @@ const usersDashboardDemo = [
 
 export default function UsersTable () {
   const UserState = useAppSelector(state => state.user)
-  const users = UserState.usersDashboard
+  const usersDashboard = UserState.usersDashboard
 
   const dispatch = useAppDispatch()
 
-  // React.useEffect(() => {
-  //   dispatch(getUsersDashboardSlice())
-  // }, [])
+  React.useEffect(() => {
+    dispatch(getUsersDashboardSlice())
+  }, [])
 
   const [page, setPage] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(10)
@@ -260,15 +264,27 @@ export default function UsersTable () {
   //   return <div>Loading...</div>
   // }
 
+  if (UserState.status === 'loading') {
+    return <LoadingSpinner />
+  }
+
+  if (UserState.status === 'failed') {
+    return <ErrorMessage message='Error loading users' />
+  }
+
+  if (!usersDashboard || usersDashboard.length === 0) {
+    return <ErrorMessage message='No users found' />
+  }
+
   return (
     <>
       {isMobile ? (
         <Stack spacing={2}>
-          {usersDashboardDemo.slice(0, visibleCount).map(user => (
+          {usersDashboard.slice(0, visibleCount).map(user => (
             <UserCard key={user.id} user={user} />
           ))}
 
-          {visibleCount < usersDashboardDemo.length && (
+          {visibleCount < usersDashboard.length && (
             <Button onClick={() => setVisibleCount(visibleCount + 5)}>
               Load More
             </Button>
@@ -293,7 +309,7 @@ export default function UsersTable () {
               </TableHead>
 
               <TableBody>
-                {usersDashboardDemo
+                {usersDashboard
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map(user => (
                     <TableRow hover tabIndex={-1} key={user.id}>
@@ -302,11 +318,16 @@ export default function UsersTable () {
                           return (
                             <TableCell key={column.id} align='center'>
                               {/* Icons هنا */}
-                              <NavLink to={`/users/${user.id}`}>
-                                <FaInfoCircle />
-                              </NavLink>
-                              <FaEdit />
-                              <MdDelete />
+                              <div className='flex justify-center items-center space-x-2'>
+                                <NavLink to={`/users/${user.id}`}>
+                                  <FaInfoCircle />
+                                </NavLink>
+                                <FaEdit />
+                                <DeleteUserDialog
+                                  userId={user.id}
+                                  userName={user.name ?? ''}
+                                />
+                              </div>
                             </TableCell>
                           )
                         }
@@ -326,7 +347,7 @@ export default function UsersTable () {
           <TablePagination
             rowsPerPageOptions={[10, 25, 100]}
             component='div'
-            count={usersDashboardDemo.length}
+            count={usersDashboard.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
