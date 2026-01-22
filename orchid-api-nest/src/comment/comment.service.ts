@@ -16,10 +16,10 @@ export class CommentService {
     try {
       const commnets = await this._prisma.comment.findMany({
         where: { storyId: storyId, parentCommentId: null },
-        orderBy: { createdAt: 'asc' },
+        orderBy: { createdAt: 'desc' },
         include: {
           replies: {
-            orderBy: { createdAt: 'asc' },
+            orderBy: { createdAt: 'desc' },
             include: {
               author: true,
             },

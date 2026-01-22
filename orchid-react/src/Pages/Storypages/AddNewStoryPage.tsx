@@ -26,84 +26,162 @@ const mockAuthors = [
 // الأنماط الثابتة (Styles)
 // **********************************************
 
+
 const styles = {
-  // النمط العام للخلفية الداكنة للجسم
   body: {
-    backgroundColor: '#0a0a0a',
+    backgroundColor: '#0f0b14',
     minHeight: '100vh',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    fontFamily: 'Arial, sans-serif',
-    direction: 'rtl' as const, // دعم اللغة العربية
-    color: '#E0E0E0'
+    fontFamily: 'Cairo, sans-serif',
+    direction: 'rtl' as const,
+    color: '#e9dff1',
+    padding: '40px 16px'
   },
 
-  // النمط الرئيسي للحاوية الزجاجية (Glassmorphism Effect)
   formContainer: {
-    padding: '30px',
-    maxWidth: '500px',
-    width: '90%',
-    borderRadius: '20px',
-    background: 'rgba(255, 255, 255, 0.05)', // خلفية شفافة قليلاً
-    boxShadow: '0 4px 30px rgba(0, 0, 0, 0.2)', // ظل خفيف
-    backdropFilter: 'blur(10px)', // التأثير الزجاجي الأساسي
-    border: '1px solid rgba(255, 255, 255, 0.1)',
-    textAlign: 'right' as const
+    padding: '32px',
+    maxWidth: '560px',
+    width: '100%',
+    borderRadius: '24px',
+    background: 'rgba(24,18,31,0.85)',
+    border: '1px solid #2a2235',
+    boxShadow: '0 20px 60px rgba(0,0,0,0.45)',
+    backdropFilter: 'blur(6px)'
   },
 
-  // أنماط حقول الإدخال والاختيار (Input/Select/Textarea)
   inputField: {
     width: '100%',
-    padding: '12px 15px',
-    margin: '8px 0 15px 0',
-    borderRadius: '10px',
-    border: '1px solid #444',
-    backgroundColor: '#1E1E1E',
-    color: '#E0E0E0',
+    padding: '14px 16px',
+    marginTop: '8px',
+    marginBottom: '18px',
+    borderRadius: '14px',
+    border: '1px solid #2a2235',
+    backgroundColor: '#0f0b14',
+    color: '#e9dff1',
     outline: 'none',
-    boxSizing: 'border-box' as const,
-    transition: 'border-color 0.3s'
+    fontFamily: 'Cairo, sans-serif'
   },
 
-  // النمط الخاص بالزر المتدرج النيون
   submitButton: {
     width: '100%',
-    padding: '15px',
-    borderRadius: '12px',
+    padding: '16px',
+    borderRadius: '16px',
     border: 'none',
     cursor: 'pointer',
-    marginTop: '25px',
+    marginTop: '28px',
     fontWeight: 'bold' as const,
-    fontSize: '1.1rem',
-    background: 'linear-gradient(45deg, #00C4FF, #924FEF)', // تدرج نيون أزرق/بنفسجي
-    color: 'white',
-    boxShadow: '0 5px 15px rgba(146, 79, 239, 0.4)',
-    transition: 'transform 0.2s'
+    fontSize: '1.05rem',
+    background: 'linear-gradient(135deg, #c084fc, #f3d9fa)',
+    color: '#0f0b14'
   },
 
-  // نمط الزر الصغير لرفع الملفات
   fileButton: {
-    padding: '10px 15px',
-    borderRadius: '8px',
-    border: 'none',
+    padding: '10px 16px',
+    borderRadius: '12px',
+    border: '1px dashed #2a2235',
     cursor: 'pointer',
-    backgroundColor: '#333',
-    color: 'white',
-    fontWeight: 'normal' as const,
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '8px'
+    backgroundColor: 'transparent',
+    color: '#f3d9fa',
+    fontFamily: 'Cairo, sans-serif'
   },
 
-  // نمط الحقل الزائف لرفع الملف
   fileInputWrapper: {
     display: 'flex',
     alignItems: 'center',
-    gap: '10px',
-    marginTop: '5px'
+    gap: '12px',
+    marginTop: '6px'
   }
 }
+
+
+
+
+
+
+
+
+
+
+// const styles = {
+//   // النمط العام للخلفية الداكنة للجسم
+//   body: {
+//     backgroundColor: '#0a0a0a',
+//     minHeight: '100vh',
+//     display: 'flex',
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     fontFamily: 'Arial, sans-serif',
+//     direction: 'rtl' as const, // دعم اللغة العربية
+//     color: '#E0E0E0'
+//   },
+
+//   // النمط الرئيسي للحاوية الزجاجية (Glassmorphism Effect)
+//   formContainer: {
+//     padding: '30px',
+//     maxWidth: '500px',
+//     width: '90%',
+//     borderRadius: '20px',
+//     background: 'rgba(255, 255, 255, 0.05)', // خلفية شفافة قليلاً
+//     boxShadow: '0 4px 30px rgba(0, 0, 0, 0.2)', // ظل خفيف
+//     backdropFilter: 'blur(10px)', // التأثير الزجاجي الأساسي
+//     border: '1px solid rgba(255, 255, 255, 0.1)',
+//     textAlign: 'right' as const
+//   },
+
+//   // أنماط حقول الإدخال والاختيار (Input/Select/Textarea)
+//   inputField: {
+//     width: '100%',
+//     padding: '12px 15px',
+//     margin: '8px 0 15px 0',
+//     borderRadius: '10px',
+//     border: '1px solid #444',
+//     backgroundColor: '#1E1E1E',
+//     color: '#E0E0E0',
+//     outline: 'none',
+//     boxSizing: 'border-box' as const,
+//     transition: 'border-color 0.3s'
+//   },
+
+//   // النمط الخاص بالزر المتدرج النيون
+//   submitButton: {
+//     width: '100%',
+//     padding: '15px',
+//     borderRadius: '12px',
+//     border: 'none',
+//     cursor: 'pointer',
+//     marginTop: '25px',
+//     fontWeight: 'bold' as const,
+//     fontSize: '1.1rem',
+//     background: 'linear-gradient(45deg, #00C4FF, #924FEF)', // تدرج نيون أزرق/بنفسجي
+//     color: 'white',
+//     boxShadow: '0 5px 15px rgba(146, 79, 239, 0.4)',
+//     transition: 'transform 0.2s'
+//   },
+
+//   // نمط الزر الصغير لرفع الملفات
+//   fileButton: {
+//     padding: '10px 15px',
+//     borderRadius: '8px',
+//     border: 'none',
+//     cursor: 'pointer',
+//     backgroundColor: '#333',
+//     color: 'white',
+//     fontWeight: 'normal' as const,
+//     display: 'inline-flex',
+//     alignItems: 'center',
+//     gap: '8px'
+//   },
+
+//   // نمط الحقل الزائف لرفع الملف
+//   fileInputWrapper: {
+//     display: 'flex',
+//     alignItems: 'center',
+//     gap: '10px',
+//     marginTop: '5px'
+//   }
+// }
 
 // **********************************************
 // المكون الرئيسي

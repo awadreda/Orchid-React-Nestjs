@@ -12,6 +12,7 @@ model User {
   email         String    @unique
   name          String?
   emailVerified DateTime?
+  password      String?
   image         String?
   role          String    @default("USER")
   createdAt     DateTime  @default(now())
@@ -96,4 +97,9 @@ model Like {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([storyId, userId])
+
+   
 }
+
+
+
