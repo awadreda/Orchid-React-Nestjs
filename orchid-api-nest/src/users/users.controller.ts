@@ -10,12 +10,14 @@ import {
   HttpCode,
   Res,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDashboardDto, UserResponseDto } from './dto/user-response.dto';
-import { ApiOkResponse, getSchemaPath } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, getSchemaPath } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 
 @Controller('user')
 export class UsersController {
@@ -57,6 +59,14 @@ export class UsersController {
     return this.usersService.getUsersDashboardData();
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access_token')
+  @ApiOkResponse({ type: [UserDashboardDto] })
+  @Get('testjwt')
+  async GetUserTestJwt (): Promise<UserDashboardDto[]> {
+    return this.usersService.getUsersDashboardData();
+  }
+
   @ApiOkResponse({ type: UserDashboardDto })
   @Get('userdashboard/:id')
   async GetUserDashboard (
@@ -77,6 +87,15 @@ export class UsersController {
 
     return dashboardData;
   }
+
+  /*************  ✨ Windsurf Command ⭐  *************/
+  /**
+   * Returns the user dashboard data for the given user ID.
+   * Requires a valid JWT token to be passed in the Authorization header.
+   * @param id The user ID to fetch the dashboard data for.
+   * @returns The user dashboard data if found, otherwise an object with a message property.
+   */
+  /*******  3420be86-5bc2-40ae-8b7f-ffd7c603babe  *******/
 
   @Post('createuser')
   @HttpCode(201)
@@ -100,7 +119,6 @@ export class UsersController {
       if (!user) {
         return { message: 'Users not created' };
       }
-
     }
     return { message: 'Users created successfully' };
   }

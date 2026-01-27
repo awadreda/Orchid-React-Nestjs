@@ -170,6 +170,7 @@ export class UsersService {
         data: {
           email: createUserDto.email,
           name: createUserDto.name,
+          password: createUserDto.password,
           image: createUserDto.image,
           role: createUserDto.role,
           createdAt: new Date(),

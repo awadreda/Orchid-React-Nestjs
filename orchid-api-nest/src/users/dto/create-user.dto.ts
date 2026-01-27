@@ -11,7 +11,12 @@ export class CreateUserDto {
   @ApiProperty({ type: String })
   @IsString()
   name?: string
-  
+
+  @MinLength(6)
+  @ApiProperty({ type: String })
+  @IsString()
+  password: string
+
   @IsOptional()
   @IsUrl()
   @ApiProperty({ type: String })
