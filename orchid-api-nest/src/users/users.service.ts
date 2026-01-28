@@ -162,6 +162,13 @@ export class UsersService {
     return this._prisma.user.findUnique({ where: { id } }).then(user => !!user);
   }
 
+  // Get user by email
+  getUserByEmailToAuth (email: string): Promise<User | null> {
+    return this._prisma.user
+      .findUnique({ where: { email } })
+      .then(user => (user ? user : null));
+  }
+
   async createUser (
     createUserDto: CreateUserDto,
   ): Promise<UserResponseDto | null> {

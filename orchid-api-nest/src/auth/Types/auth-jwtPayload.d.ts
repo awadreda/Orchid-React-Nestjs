@@ -1,8 +1,8 @@
 export type AuthJwtPayload = {
-  
-  
-  id: number;
-  email: string;
-  name: string;
+  sub: number;
   role: string;
 };
+
+export class testbody {
+  lol: string;
+}

@@ -3,7 +3,7 @@ import { IsEmail, IsString, IsStrongPassword  } from "class-validator";
 
 
 
-export class LocalLoginDto {
+export class LoginDto {
   
   @ApiProperty()
   @IsEmail()

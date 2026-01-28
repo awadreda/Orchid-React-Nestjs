@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE "User" ADD COLUMN     "password" TEXT;
+ALTER TABLE [dbo].[User] ADD [password] NVARCHAR(MAX);
