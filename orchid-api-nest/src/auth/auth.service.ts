@@ -15,9 +15,10 @@ import { ref } from 'process';
 import refresh_jwtConfig from './config/refresh_jwt.config';
 import type { ConfigType } from '@nestjs/config';
 
+import * as argon2 from 'argon2';
+
 @Injectable()
 export class AuthService {
-  
   constructor (
     private readonly _prismaService: PrismaService,
     private readonly _usersService: UsersService,
@@ -56,26 +57,50 @@ export class AuthService {
   async login (user: AuthJwtPayload) {
     const { sub, role } = user;
 
-    const token = await this._jwtService.sign({ sub, role } as AuthJwtPayload);
+    const { access_token, refresh_token } = await this.generateTokens(user);
 
-    const refreshToken = await this._jwtService.sign(
-      { sub, role } as AuthJwtPayload,
-      this._refreshJwtOptions,
-    );
+    const hashedRefreshToken = await argon2.hash(refresh_token);
 
-    return { access_token: token, refresh_token: refreshToken };
+    await this._usersService.UpdateHashedRefreshToken(sub, hashedRefreshToken);
+
+    return { access_token, refresh_token };
   }
 
+  async generateTokens (user: AuthJwtPayload) {
+    const { sub, role } = user;
 
+    const [accessToken, refreshToken] = await Promise.all([
+      this._jwtService.signAsync({ sub, role } as AuthJwtPayload),
+      this._jwtService.signAsync(
+        { sub, role } as AuthJwtPayload,
+        this._refreshJwtOptions,
+      ),
+    ]);
 
-  async refreshToken(user: AuthJwtPayload) {
+    return { access_token: accessToken, refresh_token: refreshToken };
+  }
+
+  async refreshToken (user: AuthJwtPayload) {
     const { sub, role } = user;
 
     const token = await this._jwtService.sign({ sub, role } as AuthJwtPayload);
 
-  
-
     return { access_token: token };
   }
 
+
+
+  async validateRefreshToken (userId: number, refreshToken: string) {
+
+    const user = await this._usersService.getPrismaUserById(userId);
+
+
+    if (!user || !user.hashedRefreshToken) throw new UnauthorizedException('User not found');
+
+    const isValid = await argon2.verify(user.hashedRefreshToken, refreshToken);
+
+    if (!isValid) throw new UnauthorizedException('Invalid refresh token');
+
+    return { sub: user.id, role: user.role };
+  }
 }

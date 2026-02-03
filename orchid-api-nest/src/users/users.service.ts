@@ -105,6 +105,18 @@ export class UsersService {
     }
   }
 
+ async getPrismaUserById (userId: number): Promise<User | null> {
+   try {
+     const user = await this._prisma.user.findUnique({
+       where: { id: userId },
+     });
+     return user;
+   } catch (error) {
+     console.error('Error fetching user by ID:', error);
+     throw error;
+   }
+ }
+
   async getUsersDashboardData (): Promise<UserDashboardDto[]> {
     try {
       const users = await this._prisma.user.findMany({
@@ -198,6 +210,26 @@ export class UsersService {
       const updatedUser = await this._prisma.user.update({
         where: { id },
         data: updateUserDto,
+      });
+
+      if (!updatedUser) {
+        return null;
+      }
+      return this.userMapper.toSampleResponse(updatedUser);
+    } catch (error) {
+      console.error('Error updating user:', error);
+      throw error;
+    }
+  }
+
+  async UpdateHashedRefreshToken (
+    id: number,
+    hashedRefreshToken: string,
+  ): Promise<UserResponseDto | null> {
+    try {
+      const updatedUser = await this._prisma.user.update({
+        where: { id },
+        data: { hashedRefreshToken },
       });
 
       if (!updatedUser) {

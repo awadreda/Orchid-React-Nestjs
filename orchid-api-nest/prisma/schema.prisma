@@ -13,6 +13,7 @@ model User {
   name          String?
   emailVerified DateTime?
   password      String?
+  hashedRefreshToken String?
   image         String?
   role          String    @default("USER")
   createdAt     DateTime  @default(now())
