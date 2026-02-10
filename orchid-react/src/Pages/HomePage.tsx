@@ -18,40 +18,48 @@
 //   )
 // }
 
+import { NavLink } from "react-router";
+import {
+  Box,
+  Button,
+  Container,
+  Stack,
+  Typography,
+  Paper,
+} from "@mui/material";
 
-import { NavLink } from 'react-router'
-import { Box, Button, Container, Stack, Typography, Paper } from '@mui/material'
+    
 
-export default function HomePage () {
+export default function HomePage() {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
-        minWidth: '100vw',
-        bgcolor: '#faf7fb',
-        margin: '-8px',
-        direction: 'rtl',
-        display: 'flex',
-        alignItems: 'center'
+        minHeight: "100vh",
+        minWidth: "100vw",
+        bgcolor: "#faf7fb",
+        margin: "-8px",
+        direction: "rtl",
+        display: "flex",
+        alignItems: "center",
       }}
     >
-      <Container maxWidth='md'>
+      <Container maxWidth="md">
         <Paper
           elevation={0}
           sx={{
             p: { xs: 4, md: 6 },
             borderRadius: 4,
-            bgcolor: 'rgba(255,255,255,0.85)'
+            bgcolor: "rgba(255,255,255,0.85)",
           }}
         >
-          <Stack spacing={4} alignItems='center' textAlign='center'>
+          <Stack spacing={4} alignItems="center" textAlign="center">
             {/* العنوان */}
             <Typography
-              variant='h3'
+              variant="h3"
               sx={{
-                fontFamily: 'Cairo',
+                fontFamily: "Cairo",
                 fontWeight: 700,
-                color: '#6a1b9a'
+                color: "#6a1b9a",
               }}
             >
               مدونة أوركيد
@@ -60,10 +68,10 @@ export default function HomePage () {
             {/* وصف */}
             <Typography
               sx={{
-                fontFamily: 'Cairo',
-                fontSize: '1.1rem',
-                color: '#555',
-                maxWidth: 500
+                fontFamily: "Cairo",
+                fontSize: "1.1rem",
+                color: "#555",
+                maxWidth: 500,
               }}
             >
               مساحة هادئة لقراءة القصص، حيث الكلمات تنمو مثل زهور الأوركيد.
@@ -72,16 +80,16 @@ export default function HomePage () {
             {/* اقتباس */}
             <Box
               sx={{
-                borderRight: '4px solid #ce93d8',
+                borderRight: "4px solid #ce93d8",
                 pr: 2,
-                maxWidth: 500
+                maxWidth: 500,
               }}
             >
               <Typography
                 sx={{
-                  fontFamily: 'Cairo',
-                  fontStyle: 'italic',
-                  color: '#7b1fa2'
+                  fontFamily: "Cairo",
+                  fontStyle: "italic",
+                  color: "#7b1fa2",
                 }}
               >
                 "بعض القصص لا تُقرأ… بل تُشعَر."
@@ -89,19 +97,28 @@ export default function HomePage () {
             </Box>
 
             {/* الأزرار */}
-            <Stack sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' ,gap:2}} direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+            <Stack
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 2,
+              }}
+              direction={{ xs: "column", sm: "row" }}
+              spacing={2}
+            >
               <Button
                 component={NavLink}
-                to='/stories'
-                variant='contained'
+                to="/stories"
+                variant="contained"
                 sx={{
-                  bgcolor: '#8e24aa',
+                  bgcolor: "#8e24aa",
                   px: 4,
-                  fontFamily: 'Cairo',
+                  fontFamily: "Cairo",
                   borderRadius: 3,
-                  '&:hover': {
-                    bgcolor: '#7b1fa2'
-                  }
+                  "&:hover": {
+                    bgcolor: "#7b1fa2",
+                  },
                 }}
               >
                 اقرأ القصص
@@ -109,18 +126,18 @@ export default function HomePage () {
 
               <Button
                 component={NavLink}
-                to='/addnewstory'
-                variant='outlined'
+                to="/addnewstory"
+                variant="outlined"
                 sx={{
-                  color: '#8e24aa',
-                  borderColor: '#ce93d8',
+                  color: "#8e24aa",
+                  borderColor: "#ce93d8",
                   px: 4,
-                  fontFamily: 'Cairo',
+                  fontFamily: "Cairo",
                   borderRadius: 3,
-                  '&:hover': {
-                    borderColor: '#8e24aa',
-                    bgcolor: '#f3e5f5'
-                  }
+                  "&:hover": {
+                    borderColor: "#8e24aa",
+                    bgcolor: "#f3e5f5",
+                  },
                 }}
               >
                 أضف قصتك
@@ -130,5 +147,5 @@ export default function HomePage () {
         </Paper>
       </Container>
     </Box>
-  )
+  );
 }

@@ -27,6 +27,7 @@ export class AuthService {
     private readonly _refreshJwtOptions: ConfigType<typeof refresh_jwtConfig>,
   ) {}
 
+    
   async RegisterUser (dto: CreateUserDto) {
     const userData: CreateUserDto = {
       email: dto.email,
@@ -38,6 +39,27 @@ export class AuthService {
     if (!user) throw new BadRequestException('User creation failed');
 
     return { id: user.id, email: user.email, name: user.name };
+  }
+
+  async RegisterListOfUsers (dtos: CreateUserDto[]) {
+    const users = await Promise.all(
+      dtos.map(async dto => {
+        const userData: CreateUserDto = {
+          email: dto.email,
+          name: dto.name,
+          password: await bcrypt.hash(dto.password, 10),
+          image: dto.image,
+          role: dto.role,
+        };
+
+        const user = await this._usersService.createUser(userData);
+        if (!user) throw new BadRequestException('User creation failed');
+
+        return { id: user.id, email: user.email, name: user.name };
+      }),
+    );
+
+    return users;
   }
 
   async ValidateUser (email: string, password: string): Promise<AuthJwtPayload> {
@@ -83,24 +105,32 @@ export class AuthService {
   async refreshToken (user: AuthJwtPayload) {
     const { sub, role } = user;
 
-    const token = await this._jwtService.sign({ sub, role } as AuthJwtPayload);
+    const { access_token, refresh_token } = await this.generateTokens(user);
 
-    return { access_token: token };
+    const hashedRefreshToken = await argon2.hash(refresh_token);
+
+    await this._usersService.UpdateHashedRefreshToken(sub, hashedRefreshToken);
+
+    return { access_token, refresh_token };
   }
 
-
-
   async validateRefreshToken (userId: number, refreshToken: string) {
-
     const user = await this._usersService.getPrismaUserById(userId);
 
+    if (!user )
+      throw new UnauthorizedException('User not found');
 
-    if (!user || !user.hashedRefreshToken) throw new UnauthorizedException('User not found');
+    if(!user.hashedRefreshToken)
+      throw new UnauthorizedException('Refresh token not found');
 
     const isValid = await argon2.verify(user.hashedRefreshToken, refreshToken);
 
     if (!isValid) throw new UnauthorizedException('Invalid refresh token');
 
     return { sub: user.id, role: user.role };
+  }
+
+  async logOut (userId: number) {
+    await this._usersService.UpdateHashedRefreshToken(userId, null);
   }
 }

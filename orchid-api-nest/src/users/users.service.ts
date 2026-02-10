@@ -18,6 +18,15 @@ export class UsersService {
   private storyMapper = new StoryMapper();
   private likeMapper = new LikeMapper();
 
+  async getMe (id: number) {
+    const user = await this._prisma.user.findUnique({
+      where: { id },
+      select: { id: true, email: true, name: true, image: true, role: true },
+    });
+    return user;
+  }
+
+  
   async getUsers (): Promise<UserResponseDto[]> {
     try {
       const users = await this._prisma.user.findMany({
@@ -105,17 +114,17 @@ export class UsersService {
     }
   }
 
- async getPrismaUserById (userId: number): Promise<User | null> {
-   try {
-     const user = await this._prisma.user.findUnique({
-       where: { id: userId },
-     });
-     return user;
-   } catch (error) {
-     console.error('Error fetching user by ID:', error);
-     throw error;
-   }
- }
+  async getPrismaUserById (userId: number): Promise<User | null> {
+    try {
+      const user = await this._prisma.user.findUnique({
+        where: { id: userId },
+      });
+      return user;
+    } catch (error) {
+      console.error('Error fetching user by ID:', error);
+      throw error;
+    }
+  }
 
   async getUsersDashboardData (): Promise<UserDashboardDto[]> {
     try {
@@ -224,7 +233,7 @@ export class UsersService {
 
   async UpdateHashedRefreshToken (
     id: number,
-    hashedRefreshToken: string,
+    hashedRefreshToken: string | null,
   ): Promise<UserResponseDto | null> {
     try {
       const updatedUser = await this._prisma.user.update({

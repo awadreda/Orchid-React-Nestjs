@@ -11,6 +11,7 @@ import {
   Res,
   HttpStatus,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -23,6 +24,13 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 export class UsersController {
   constructor (private readonly usersService: UsersService) {}
 
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  getProfile(@Request() req) {
+    return this.usersService.getMe(req.user.sub);
+  }
+
+
   @ApiOkResponse({ type: [UserResponseDto] })
   @Get('allusers')
   async GetAllUsers (): Promise<UserResponseDto[] | { message: string }> {
@@ -33,6 +41,7 @@ export class UsersController {
     }
     return users;
   }
+
 
   @ApiOkResponse({ type: UserResponseDto })
   @Get('userbyid/:id')
@@ -122,7 +131,9 @@ export class UsersController {
     }
     return { message: 'Users created successfully' };
   }
-
+  
+   
+  
   @Put('updateuser/:id')
   async UpdateUser (
     @Param('id') id: string,

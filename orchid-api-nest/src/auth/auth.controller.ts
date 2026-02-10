@@ -16,14 +16,24 @@ import { LocalAuthGuard } from './guards/local-auth/local-auth.guard';
 import { ApiBearerAuth, ApiBody, ApiResponse } from '@nestjs/swagger';
 import { RefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
 import { testbody } from './Types/auth-jwtPayload';
+import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor (private readonly authService: AuthService) {}
 
   @Post('register')
+  @ApiResponse({ status: 201, type: CreateUserDto })
+  @ApiBody({ type: CreateUserDto })
   async registerUser (@Body() dto: CreateUserDto) {
     return this.authService.RegisterUser(dto);
+  }
+
+  @Post('registerListOfUsers')
+  @ApiResponse({ status: 201, type: [CreateUserDto] })
+  @ApiBody({ type: [CreateUserDto] })
+  async registerListOfUsers (@Body() dtos: CreateUserDto[]) {
+    return this.authService.RegisterListOfUsers(dtos);
   }
 
   @ApiBody({ type: LoginDto })
@@ -44,5 +54,12 @@ export class AuthController {
   async refreshToken (@Request() req) {
     const result = await this.authService.refreshToken(req.user);
     return { access_token: result.access_token };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('logOut')
+  @ApiBearerAuth()
+  async logOut (@Request() req) {
+    await this.authService.logOut(req.user.sub);
   }
 }
