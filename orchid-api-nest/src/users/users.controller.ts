@@ -12,6 +12,7 @@ import {
   HttpStatus,
   UseGuards,
   Request,
+  SetMetadata,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -19,6 +20,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDashboardDto, UserResponseDto } from './dto/user-response.dto';
 import { ApiBearerAuth, ApiOkResponse, getSchemaPath } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
+import { Role } from 'src/auth/Enums/role.enum';
+import { Roles } from 'src/auth/Decorators/roles.decorator';
+import { RolesGuard } from 'src/auth/guards/roles/roles.guard';
 
 @Controller('user')
 export class UsersController {
@@ -28,18 +32,6 @@ export class UsersController {
   @Get('me')
   getProfile(@Request() req) {
     return this.usersService.getMe(req.user.sub);
-  }
-
-
-  @ApiOkResponse({ type: [UserResponseDto] })
-  @Get('allusers')
-  async GetAllUsers (): Promise<UserResponseDto[] | { message: string }> {
-    const users = await this.usersService.getUsers();
-
-    if (users.length === 0) {
-      return { message: 'No users found' };
-    }
-    return users;
   }
 
 
@@ -62,17 +54,31 @@ export class UsersController {
     return user;
   }
 
+
+
   @ApiOkResponse({ type: [UserDashboardDto] })
   @Get('usersdashboard')
   async GetUsersDashboard (): Promise<UserDashboardDto[]> {
     return this.usersService.getUsersDashboardData();
   }
 
+  @UseGuards(RolesGuard)
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('access_token')
   @ApiOkResponse({ type: [UserDashboardDto] })
-  @Get('testjwt')
+  @Roles(Role.USER)
+  @Get('testjwtUser')
   async GetUserTestJwt (): Promise<UserDashboardDto[]> {
+    return this.usersService.getUsersDashboardData();
+  }
+
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access_token')
+  @ApiOkResponse({ type: [UserDashboardDto] })
+  @Roles(Role.ADMIN,)
+  @Get('testJwtAuthZAdmin')
+  async GetUserTestJwtAuthZ (): Promise<UserDashboardDto[]> {
     return this.usersService.getUsersDashboardData();
   }
 
