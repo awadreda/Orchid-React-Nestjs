@@ -545,8 +545,8 @@ export default function AddNewStoryPage () {
               </span>
               <input
                 type='url'
-                name='thumbnailUrl'
-                value={storyData.thumbnailUrl}
+                name='thumbnail'
+                // value={storyData.thumbnail}
                 onChange={handleChange}
                 onFocus={() => setThumbnailFile(null)} // إزالة الملف المرفوع عند بدء إدخال URL
                 style={styles.inputField}
