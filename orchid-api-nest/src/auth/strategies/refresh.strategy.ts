@@ -22,17 +22,15 @@ export class RefreshJwtStrategy extends PassportStrategy(
     private readonly _authService: AuthService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest:ExtractJwt.fromExtractors([req => req.cookies?.refresh_token]),
       secretOrKey: refreshJwtConfigeration.secret as string,
       ignoreExpiration: false,
       passReqToCallback: true,
     });
   }
+
   validate (req: Request, payload: AuthJwtPayload) {
-    const refreshToken = req
-      .get('authorization')
-      ?.replace('Bearer ', '')
-      .trim();
+    const refreshToken = req.cookies?.refresh_token;
 
     if (!refreshToken) {
       throw new Error('Refresh token not found');

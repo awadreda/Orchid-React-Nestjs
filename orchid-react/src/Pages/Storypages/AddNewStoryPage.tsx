@@ -4,16 +4,9 @@ import Mammoth from 'mammoth'
 import { FaTheRedYeti } from 'react-icons/fa'
 import { createStorySlice } from '@/Redux/slices/storySlice'
 import ReturnHome from '@/Components/Home/ReturnHome'
+import type { CreateStoryDto } from '@/types/storyTypes'
 
-// يمكنك جلب هذه الواجهة من ملف Typescript الخاص بك
-export interface CreateStoryDto {
-  title: string
-  content?: string
-  caption?: string
-  thumbnailUrl?: string
-  published?: boolean
-  authorId?: number
-}
+
 
 // قائمة وهمية للمؤلفين لاستخدامها في Select Box
 const mockAuthors = [
@@ -192,7 +185,7 @@ export default function AddNewStoryPage () {
     title: '',
     content: '',
     caption: '',
-    thumbnailUrl: '',
+    thumbnail: undefined,
     published: false,
     authorId: undefined
   })
@@ -330,7 +323,7 @@ export default function AddNewStoryPage () {
       setThumbnailFile(file)
       setStoryData(prev => ({
         ...prev,
-        thumbnailUrl: ''
+        thumbnail: file
       }))
     }
   }
@@ -343,7 +336,7 @@ export default function AddNewStoryPage () {
     if (thumbnailFile) {
       console.log('سيتم رفع هذا الملف:', thumbnailFile.name)
       // محاكاة لـ URL
-      finalStoryData.thumbnailUrl = `uploaded-temp-url/${thumbnailFile.name}`
+      finalStoryData.thumbnail = thumbnailFile
     }
 
     finalStoryData.authorId = finalStoryData.authorId

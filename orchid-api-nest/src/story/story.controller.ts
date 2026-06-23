@@ -7,13 +7,16 @@ import {
   Param,
   Delete,
   Put,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
-import { StoryService } from './story.service';
+import { StoryService } from './Services/story.service';
 import { CreateStoryDto } from './dto/create-story.dto';
 import { UpdateStoryDto } from './dto/update-story.dto';
 import { StoryResponseDto, storySummryDto } from './dto/story-response.dto';
 import { Story } from '@prisma/client';
-import { ApiOkResponse } from '@nestjs/swagger';
+import { ApiConsumes, ApiOkResponse } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('story')
 export class StoryController {
@@ -84,9 +87,15 @@ export class StoryController {
   // Create Story
 
   @Post('createstory')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('thumbnail')) // Intercept the 'thumbnail' file from the request
   async createStory (
     @Body() createStoryDto: CreateStoryDto,
+    @UploadedFile() thumbnail: Express.Multer.File,
   ): Promise<StoryResponseDto | { message: string }> {
+
+    createStoryDto.thumbnail = thumbnail;
+    
     const story = await this.storyService.createStory(createStoryDto);
 
     if (!story) {
@@ -95,6 +104,8 @@ export class StoryController {
 
     return story;
   }
+
+
 
   //create list of stories
   @Post('createlistofstories')
@@ -114,6 +125,13 @@ export class StoryController {
     }
     return stories;
   }
+
+
+
+
+
+
+  
 
   @Put('updatestory/:id')
   async UpdateStory (

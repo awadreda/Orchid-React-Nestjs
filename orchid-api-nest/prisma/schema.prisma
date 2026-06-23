@@ -69,6 +69,7 @@ model Story {
   authorId     Int?
   caption      String?
   thumbnailUrl String?
+  publicID_ForCloudinary  String?
   comments     Comment[]
   likes        Like[]
   author       User?     @relation(fields: [authorId], references: [id])

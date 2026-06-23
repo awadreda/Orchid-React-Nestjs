@@ -8,7 +8,7 @@ export interface CreateStoryDto {
 
   caption?: string
 
-  thumbnailUrl?: string
+  thumbnail?: File
 
   published?: boolean
 

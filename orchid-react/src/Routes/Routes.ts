@@ -9,10 +9,21 @@ import UpdateStoryPage from '@/Pages/Storypages/UpdateStoryPage'
 import UsersTable from '@/Pages/UsersPages/Userstable'
 import UserInfoPage from '@/Pages/UsersPages/UserInfoPage'
 
+import LoginPage from '@/Pages/AuthPages/LoginPage'
+import RegisterPage from '@/Pages/AuthPages/RegesterPage'
+
 const router = createBrowserRouter([
   {
     path: '/',
     Component: HomePage
+  },
+  {
+    path: '/login',
+    Component: LoginPage
+  },
+  {
+    path: '/register',
+    Component: RegisterPage
   },
   {
     path: '/stories',
@@ -30,8 +41,8 @@ const router = createBrowserRouter([
   {
     path: '/usersTable',
     Component: UsersTable
-  }
-  ,{
+  },
+  {
     path: '/users/:userId',
     Component: UserInfoPage
   }

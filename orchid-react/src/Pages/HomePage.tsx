@@ -27,6 +27,8 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
+import SginInButton from "@/Components/Auth/SginInButton";
+import RigsterButton from "@/Components/Auth/RigsterButton";
 
     
 
@@ -44,6 +46,7 @@ export default function HomePage() {
       }}
     >
       <Container maxWidth="md">
+
         <Paper
           elevation={0}
           sx={{
@@ -52,6 +55,13 @@ export default function HomePage() {
             bgcolor: "rgba(255,255,255,0.85)",
           }}
         >
+          <Box>
+          <SginInButton/>
+          <RigsterButton/>
+
+
+          </Box>
+          
           <Stack spacing={4} alignItems="center" textAlign="center">
             {/* العنوان */}
             <Typography

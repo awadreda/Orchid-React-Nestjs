@@ -1,18 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { CreateStoryDto } from './dto/create-story.dto';
-import { UpdateStoryDto } from './dto/update-story.dto';
-import { StoryMapper } from './Mapper/stroy-mapper';
-import { StoryResponseDto, storySummryDto } from './dto/story-response.dto';
+import { CreateStoryDto } from '../dto/create-story.dto';
+import { UpdateStoryDto } from '../dto/update-story.dto';
+import { StoryMapper } from '../Mapper/stroy-mapper';
+import { StoryResponseDto, storySummryDto } from '../dto/story-response.dto';
 // import { PrismaService } from 'src/prisma/prisma.service';
 import { UsersService } from 'src/users/users.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Story } from '@prisma/client';
+import { ImagesService } from './Images/Images.service';
 
 @Injectable()
 export class StoryService {
   constructor (
     private readonly _prisma: PrismaService,
     private readonly _userService: UsersService,
+    private readonly _imagesService: ImagesService,
   ) {}
 
   private storyMapper = new StoryMapper();
@@ -141,21 +143,30 @@ export class StoryService {
     dto: CreateStoryDto,
   ): Promise<StoryResponseDto | { message: string }> {
     try {
-      if (dto.authorId) {
-        if (!(await this._userService.isUserExist(dto.authorId)))
+
+      const authorId = typeof dto.authorId === 'string' ? parseInt(dto.authorId) : dto.authorId;
+      if (authorId) {
+        if (!(await this._userService.isUserExist(authorId)))
           return { message: ' the author not found' };
+
+
+
+
+          const uploadResult = await this._imagesService.uploadImageToCloudinary(dto.thumbnail);
+
         const story = await this._prisma.story.create({
           data: {
             title: dto.title,
             content: dto.content,
             published: dto.published ?? false,
-            thumbnailUrl: dto.thumbnailUrl ?? null,
+            thumbnailUrl: uploadResult?.secure_url ?? null,
+            publicID_ForCloudinary: uploadResult?.public_id ?? null,
             caption: dto.caption ?? null,
-            authorId: dto.authorId ?? null,
+            authorId: authorId ?? null,
             createdAt: new Date(),
           },
         });
-
+          console.log("uploaded Images", uploadResult);
         return this.storyMapper.toStoryResponse(story, [], [], null);
       } else {
         return { message: 'Author not found' };
@@ -165,6 +176,13 @@ export class StoryService {
       throw error;
     }
   }
+
+
+  
+
+
+
+
 
   // -----------------------------
   // Update Story
@@ -206,6 +224,16 @@ export class StoryService {
       if (!(await this.isStoryExist(id))) {
         return { message: 'Story not found' };
       }
+
+
+        const story = await this._prisma.story.findUnique({
+          where: { id },
+        });
+
+        if (story != null && story.publicID_ForCloudinary) {
+
+          await this._imagesService.deleteImageFromCloudinary(story.publicID_ForCloudinary);
+        }
 
       await this._prisma.story.delete({
         where: { id },

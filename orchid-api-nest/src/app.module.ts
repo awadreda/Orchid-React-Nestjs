@@ -16,8 +16,11 @@ import { AuthModule } from './auth/auth.module';
     StoryModule,
     CommentModule,
     LikeModule,
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ 
+        envFilePath: 'nest_Dev.env',
+      isGlobal: true }),
     AuthModule,
+
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -7,6 +7,8 @@ import 'reflect-metadata';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { apiReference } from '@scalar/nestjs-api-reference';
+import cookieParser from 'cookie-parser';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap () {
   const app = await NestFactory.create(AppModule);
@@ -33,6 +35,11 @@ async function bootstrap () {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
+  app.useGlobalPipes(new ValidationPipe({ transform: true ,
+    transformOptions: {
+      enableImplicitConversion: true,
+    },
+  }));
 
   app.use(
     '/reference', // the path where the API reference will be available
@@ -47,6 +54,14 @@ async function bootstrap () {
       url: '/openapi.json', // serve your swagger.json at this path
     }),
   );
+
+  app.use(cookieParser());
+  app.enableCors({
+    origin: 'http://localhost:5173', // Your frontend URL
+    credentials: true,
+  });
+
+
 
   app.use(bodyParser.json({ limit: '1mb' }));
   app.use(bodyParser.urlencoded({ limit: '1mb', extended: true }));

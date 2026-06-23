@@ -32,7 +32,7 @@
     "image": "https://i.pravatar.cc/150?u=youssef"
   },
   {
-    "email": "nour.h@example.com",
+    "email": "nour.h@example.com", // admin
     "name": "Nour Hassan",
     "password": "password123",
     "role": "user",

@@ -7,6 +7,7 @@ import {
   IsString,
   IsInt,
 } from 'class-validator';
+import { buffer } from 'stream/consumers';
 
 export class CreateStoryDto {
   @IsString()
@@ -25,9 +26,9 @@ export class CreateStoryDto {
   caption?: string;
 
   @IsString()
-  @ApiProperty({ type: String })
+  @ApiProperty({ type: String, format: 'binary' })
   @IsOptional()
-  thumbnailUrl?: string;
+  thumbnail: Express.Multer.File;
 
   @IsBoolean()
   @ApiProperty({ type: Boolean })

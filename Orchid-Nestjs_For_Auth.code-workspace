@@ -5,6 +5,9 @@
     },
     {
       "path": "../../../../../../../../../mnt/MyData/MyMainData/Test_Gemini/nestjs_project"
+    },
+    {
+      "path": "orchid-react"
     }
   ],
   "settings": {}

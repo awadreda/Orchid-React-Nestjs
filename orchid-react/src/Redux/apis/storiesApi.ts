@@ -56,13 +56,39 @@ export const getStoriesSummaryByIdApi = async (id: number) => {
 
 export const createStoryApi = async (storyData: CreateStoryDto) => {
   try {
-    const response = await api.post('/createstory', storyData)
+      const formData = new FormData();
+      formData.append('title', storyData.title);
+
+      if (storyData.content) {
+        formData.append('content', storyData.content);
+      }
+      if (storyData.caption) {
+        formData.append('caption', storyData.caption);
+      }
+      if (storyData.thumbnail) {
+        formData.append('thumbnail', storyData.thumbnail);
+      }
+      if (storyData.authorId) {
+        formData.append('authorId', storyData.authorId.toString());
+      }
+      if (storyData.published !== undefined) {
+        formData.append('published', storyData.published.toString());
+      }
+
+
+    const response = await api.post('/createstory', formData ,{
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
     return response.data
   } catch (error) {
     console.error('Error creating story:', error)
     throw error
   }
 }
+
+
 
 export const updateStoryApi = async (id: number, storyData: UpdateStoryDto) => {
   try {

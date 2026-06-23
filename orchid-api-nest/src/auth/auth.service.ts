@@ -19,7 +19,7 @@ import * as argon2 from 'argon2';
 
 @Injectable()
 export class AuthService {
-  constructor (
+  constructor(
     private readonly _prismaService: PrismaService,
     private readonly _usersService: UsersService,
     private readonly _jwtService: JwtService,
@@ -27,8 +27,7 @@ export class AuthService {
     private readonly _refreshJwtOptions: ConfigType<typeof refresh_jwtConfig>,
   ) {}
 
-    
-  async RegisterUser (dto: CreateUserDto) {
+  async RegisterUser(dto: CreateUserDto) {
     const userData: CreateUserDto = {
       email: dto.email,
       name: dto.name,
@@ -41,9 +40,9 @@ export class AuthService {
     return { id: user.id, email: user.email, name: user.name };
   }
 
-  async RegisterListOfUsers (dtos: CreateUserDto[]) {
+  async RegisterListOfUsers(dtos: CreateUserDto[]) {
     const users = await Promise.all(
-      dtos.map(async dto => {
+      dtos.map(async (dto) => {
         const userData: CreateUserDto = {
           email: dto.email,
           name: dto.name,
@@ -62,7 +61,7 @@ export class AuthService {
     return users;
   }
 
-  async ValidateUser (email: string, password: string): Promise<AuthJwtPayload> {
+  async ValidateUser(email: string, password: string): Promise<AuthJwtPayload> {
     const user = await this._usersService.getUserByEmailToAuth(email);
 
     if (!user) throw new UnauthorizedException('User not found');
@@ -76,7 +75,7 @@ export class AuthService {
     return { sub: user.id, role: user.role };
   }
 
-  async login (user: AuthJwtPayload) {
+  async login(user: AuthJwtPayload) {
     const { sub, role } = user;
 
     const { access_token, refresh_token } = await this.generateTokens(user);
@@ -88,7 +87,7 @@ export class AuthService {
     return { access_token, refresh_token };
   }
 
-  async generateTokens (user: AuthJwtPayload) {
+  async generateTokens(user: AuthJwtPayload) {
     const { sub, role } = user;
 
     const [accessToken, refreshToken] = await Promise.all([
@@ -102,7 +101,7 @@ export class AuthService {
     return { access_token: accessToken, refresh_token: refreshToken };
   }
 
-  async refreshToken (user: AuthJwtPayload) {
+  async refreshToken(user: AuthJwtPayload) {
     const { sub, role } = user;
 
     const { access_token, refresh_token } = await this.generateTokens(user);
@@ -114,13 +113,12 @@ export class AuthService {
     return { access_token, refresh_token };
   }
 
-  async validateRefreshToken (userId: number, refreshToken: string) {
+  async validateRefreshToken(userId: number, refreshToken: string) {
     const user = await this._usersService.getPrismaUserById(userId);
 
-    if (!user )
-      throw new UnauthorizedException('User not found');
+    if (!user) throw new UnauthorizedException('User not found');
 
-    if(!user.hashedRefreshToken)
+    if (!user.hashedRefreshToken)
       throw new UnauthorizedException('Refresh token not found');
 
     const isValid = await argon2.verify(user.hashedRefreshToken, refreshToken);
@@ -130,7 +128,20 @@ export class AuthService {
     return { sub: user.id, role: user.role };
   }
 
-  async logOut (userId: number) {
+  async logOut(userId: number) {
     await this._usersService.UpdateHashedRefreshToken(userId, null);
+  }
+
+  // Google Auth
+
+  async ValidateGoogleUser(googleUser: CreateUserDto) {
+    const user = await this._usersService.getUserByEmailToAuth(
+      googleUser.email,
+    );
+
+    if (user) return user;
+
+    const newUser = await this._usersService.createUser(googleUser);
+    return newUser;
   }
 }
