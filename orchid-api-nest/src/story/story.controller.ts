@@ -90,12 +90,11 @@ export class StoryController {
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('thumbnail')) // Intercept the 'thumbnail' file from the request
   async createStory (
-    @Body() createStoryDto: CreateStoryDto,
     @UploadedFile() thumbnail: Express.Multer.File,
+    @Body() createStoryDto: CreateStoryDto,
   ): Promise<StoryResponseDto | { message: string }> {
-
     createStoryDto.thumbnail = thumbnail;
-    
+
     const story = await this.storyService.createStory(createStoryDto);
 
     if (!story) {
@@ -104,8 +103,6 @@ export class StoryController {
 
     return story;
   }
-
-
 
   //create list of stories
   @Post('createlistofstories')
@@ -126,16 +123,12 @@ export class StoryController {
     return stories;
   }
 
-
-
-
-
-
-  
-
   @Put('updatestory/:id')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('thumbnail'))
   async UpdateStory (
     @Param('id') id: string,
+    @UploadedFile() thumbnail: Express.Multer.File,
     @Body() updateStoryDto: UpdateStoryDto,
   ): Promise<StoryResponseDto | { message: string }> {
     if (isNaN(parseInt(id))) {
@@ -143,6 +136,7 @@ export class StoryController {
     }
     const idNum = parseInt(id);
 
+    updateStoryDto.thumbnail = thumbnail;
     const story = await this.storyService.updateStory(idNum, updateStoryDto);
 
     if (!story) {

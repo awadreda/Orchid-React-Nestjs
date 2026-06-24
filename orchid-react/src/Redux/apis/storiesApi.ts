@@ -92,7 +92,20 @@ export const createStoryApi = async (storyData: CreateStoryDto) => {
 
 export const updateStoryApi = async (id: number, storyData: UpdateStoryDto) => {
   try {
-    const response = await api.put(`/updatestory/${id}`, storyData)
+
+      const formData = new FormData()
+      if (storyData.title) formData.append('title', storyData.title)
+      if (storyData.content) formData.append('content', storyData.content)
+      if (storyData.caption) formData.append('caption', storyData.caption)
+      if (storyData.thumbnail) formData.append('thumbnail', storyData.thumbnail)
+      if (storyData.published !== undefined) formData.append('published', storyData.published.toString())
+      if (storyData.authorId) formData.append('authorId', storyData.authorId.toString())
+
+    const response = await api.put(`/updatestory/${id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
     return response.data
   } catch (error) {
     console.error('Error updating story:', error)

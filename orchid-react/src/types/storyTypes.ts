@@ -68,7 +68,7 @@ export interface UpdateStoryDto {
   caption: string
   content: string
   published: boolean
-  thumbnailUrl: string
+  thumbnail: File | null
   authorId?: number
 }
 

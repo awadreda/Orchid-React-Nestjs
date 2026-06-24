@@ -219,7 +219,7 @@ export default function UpdateStoryPage () {
     title: initialStory?.title || '',
     content: initialStory?.content || '',
     caption: initialStory?.caption || '',
-    thumbnailUrl: initialStory?.thumbnailUrl || '',
+    thumbnail:null,
     published: initialStory?.published || false,
     authorId: initialStory?.authorId || undefined
   })
@@ -237,7 +237,7 @@ export default function UpdateStoryPage () {
         title: initialStory.title || '',
         content: initialStory.content || '',
         caption: initialStory.caption || '',
-        thumbnailUrl: initialStory.thumbnailUrl || '',
+        thumbnail: null,
         published: initialStory.published || false,
         authorId: initialStory.authorId || undefined
       })
@@ -307,7 +307,7 @@ export default function UpdateStoryPage () {
       // إفراغ حقل الـ URL عند رفع ملف
       setStoryData(prev => ({
         ...prev,
-        thumbnailUrl: ''
+        thumbnail: file
       }))
     }
   }
@@ -329,7 +329,7 @@ export default function UpdateStoryPage () {
     if (thumbnailFile) {
       console.log('سيتم رفع هذا الملف:', thumbnailFile.name)
       // في بيئة الإنتاج: هنا يتم استدعاء API لرفع الصورة والحصول على الرابط
-      finalStoryData.thumbnailUrl = `uploaded-temp-url/${thumbnailFile.name}`
+      finalStoryData.thumbnail = thumbnailFile
     }
 
     finalStoryData.authorId = finalStoryData.authorId
@@ -574,7 +574,7 @@ export default function UpdateStoryPage () {
               <input
                 type='url'
                 name='thumbnailUrl'
-                value={storyData.thumbnailUrl}
+                value={''}
                 onChange={handleChange}
                 onFocus={() => setThumbnailFile(null)}
                 style={styles.inputField}

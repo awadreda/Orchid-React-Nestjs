@@ -197,12 +197,35 @@ export class StoryService {
         return null;
       }
 
+      const oldStory = await this._prisma.story.findUnique({
+        where: { id },
+      });
+
+      console.log("Old Story:", oldStory);
+
+      if (oldStory?.publicID_ForCloudinary && dto.thumbnail) {
+        await this._imagesService.deleteImageFromCloudinary(oldStory.publicID_ForCloudinary);
+      }
+
+
+      if(!dto.thumbnail) 
+      {
+
+        console.log("the thumbnail is missing");
+        return null;
+
+      }
+        
+
+      const uploadedStory = await this._imagesService.uploadImageToCloudinary(dto.thumbnail);
+
       const updated = await this._prisma.story.update({
         where: { id },
         data: {
           title: dto.title,
           content: dto.content,
-          thumbnailUrl: dto.thumbnailUrl,
+          thumbnailUrl: uploadedStory?.secure_url ?? null,
+          publicID_ForCloudinary: uploadedStory?.public_id ?? null,
           caption: dto.caption,
           published: dto.published,
           authorId: dto.authorId,
@@ -215,6 +238,19 @@ export class StoryService {
       throw error;
     }
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   // -----------------------------
   // Delete Story

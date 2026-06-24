@@ -20,10 +20,9 @@ export class UpdateStoryDto {
   caption?: string;
 
   @IsString()
-  @ApiProperty({ type: String })
+  @ApiProperty({ type: String, format: 'binary' })
   @IsOptional()
-  thumbnailUrl?: string;
-
+  thumbnail: Express.Multer.File;
 
   @IsBoolean()
   @IsOptional()
