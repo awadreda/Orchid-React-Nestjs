@@ -11,6 +11,7 @@ import {
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
+import { CreateSubCommentDto } from './dto/create-subComment.dto';
 
 @Controller('comment')
 export class CommentController {
@@ -49,6 +50,18 @@ export class CommentController {
     }
     return comment;
   }
+
+
+  @Post('CreateSubComment')
+  async createSubComment (@Body() createSubCommentDto: CreateSubCommentDto) {
+    const subComment = await this.commentService.createSubComment(createSubCommentDto);
+    if (!subComment) {
+      throw new Error('Sub-comment creation failed');
+    }
+    return subComment;
+  }
+
+  
 
   @Put('UpdateComment/:id')
   async updateComment (

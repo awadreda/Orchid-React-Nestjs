@@ -1,4 +1,4 @@
-import type { CommentResponseDto, CreateCommentDto, UpdateCommentDto } from '@/types/commentType'
+import type { CommentResponseDto, CreateCommentDto, CreateSubCommentDto, UpdateCommentDto } from '@/types/commentType'
 import axios from 'axios'
 
 const api = axios.create({
@@ -39,6 +39,17 @@ export const createCommentApi = async (commentData: CreateCommentDto) => {
     return response.data
   } catch (error) {
     console.error('Error creating comment:', error)
+    throw error
+  }
+}
+
+
+export const createSubCommentApi = async (subCommentData: CreateSubCommentDto) => {
+  try {
+    const response = await api.post('/CreateSubComment', subCommentData)
+    return response.data
+  } catch (error) {
+    console.error('Error creating sub-comment:', error)
     throw error
   }
 }

@@ -1,12 +1,14 @@
 import type {
   CommentResponseDto,
   CreateCommentDto,
+  CreateSubCommentDto,
   UpdateCommentDto
 } from '@/types/commentType'
 
 
 import {
   createCommentApi,
+  createSubCommentApi,
   deleteCommentApi,
   getCommentByIdApi,
   getCommentsByStoryIdApi,
@@ -20,6 +22,7 @@ interface CommentState {
   error: string | null
 
   comment: CommentResponseDto | null
+  
 }
 
 const initialState: CommentState = {
@@ -49,6 +52,14 @@ export const CreateCommentSlice = createAsyncThunk(
   '/createcomment',
   async (commentData: CreateCommentDto) => {
     const response = await createCommentApi(commentData)
+    return response as CommentResponseDto
+  }
+)
+
+export const CreateSubCommentSlice = createAsyncThunk(
+  '/createsubcomment',
+  async (subCommentData: CreateSubCommentDto) => {
+    const response = await createSubCommentApi(subCommentData)
     return response as CommentResponseDto
   }
 )
@@ -105,6 +116,18 @@ const CommentSlice = createSlice({
         state.error = action.error.message || 'Failed to create comment'
       })
       .addCase(CreateCommentSlice.pending, state => {
+        state.status = 'loading'
+      })
+      //createSubComment
+      .addCase(CreateSubCommentSlice.fulfilled, (state, action) => {
+        state.comments.push(action.payload)
+        state.status = 'succeeded'
+      })
+      .addCase(CreateSubCommentSlice.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.error.message || 'Failed to create sub-comment'
+      })
+      .addCase(CreateSubCommentSlice.pending, state => {
         state.status = 'loading'
       })
       // Delete Comment

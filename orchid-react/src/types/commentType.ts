@@ -1,4 +1,4 @@
-import type { UserResponseDto } from "./UserTypes"
+import type { UserResponseDto } from './UserTypes'
 
 // DTO for comment response
 export interface CommentResponseDto {
@@ -8,13 +8,19 @@ export interface CommentResponseDto {
   authorId: number
   parentCommentId?: number
   replies: CommentResponseDto[]
-  author:UserResponseDto
+  author: UserResponseDto
   createdAt: Date
 }
 
 export type CreateCommentDto = {
   content: string
-  parentCommentId?: number
+  storyId: number
+  authorId: number
+}
+
+export type CreateSubCommentDto = {
+  content: string
+  parentCommentId: number
   storyId: number
   authorId: number
 }

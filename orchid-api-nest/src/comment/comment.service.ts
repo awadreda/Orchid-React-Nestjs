@@ -4,6 +4,7 @@ import { UpdateCommentDto } from './dto/update-comment.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CommentMapper } from './Mappers/comment-mapper';
 import { UserMapper } from 'src/users/Mapper/user-mapper';
+import { CreateSubCommentDto } from './dto/create-subComment.dto';
 
 @Injectable()
 export class CommentService {
@@ -42,7 +43,6 @@ export class CommentService {
       throw error;
     }
   }
-  
 
   async getCommentById (id: number) {
     try {
@@ -75,13 +75,32 @@ export class CommentService {
           content: createCommentDto.content,
           storyId: createCommentDto.storyId,
           authorId: createCommentDto.authorId,
-          parentCommentId: createCommentDto.parentCommentId,
         },
       });
 
       return this.commentMapper.toResponse(newComment);
     } catch (error) {
       console.error('Error creating comment:', error);
+      throw error;
+    }
+  }
+
+  
+
+  async createSubComment (createSubCommentDto: CreateSubCommentDto) {
+    try {
+      const newSubComment = await this._prisma.comment.create({
+        data: {
+          content: createSubCommentDto.content,
+          storyId: createSubCommentDto.storyId,
+          authorId: createSubCommentDto.authorId,
+          parentCommentId: createSubCommentDto.parentCommentId,
+        },
+      });
+
+      return this.commentMapper.toResponse(newSubComment);
+    } catch (error) {
+      console.error('Error creating sub-comment:', error);
       throw error;
     }
   }

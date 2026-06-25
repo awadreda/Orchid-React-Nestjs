@@ -9,6 +9,7 @@ import DialogTitle from '@mui/material/DialogTitle'
 import { useAppDispatch, useAppSelector } from '@/Redux/hooks'
 import {
   CreateCommentSlice,
+  CreateSubCommentSlice,
   getCommentByIdSlice,
   UpdateCommentSlice
 } from '@/Redux/slices/CommentSlice'
@@ -43,8 +44,9 @@ export default function ReplyDialog ({ comment }: ReplyDialogProps) {
     // const email = formJson.email
     // console.log(email)
     dispatch(
-      CreateCommentSlice({
+      CreateSubCommentSlice({
         content: EditCommentValue,
+        
         parentCommentId: comment.id,
         storyId: comment.storyId,
         authorId: 1
