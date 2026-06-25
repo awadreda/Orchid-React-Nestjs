@@ -1,7 +1,7 @@
 export interface CreateLikeDto {
   storyId: number
 
-  userid: number
+  userId: number
 }
 
 export interface LikeResponseDto {

@@ -19,6 +19,8 @@ interface StoryCardProps {
 }
 
 export default function StoryCard ({ storySummaryForCard }: StoryCardProps) {
+
+  console.log('storySummaryForCard:', storySummaryForCard)
   return (
     <Card
       sx={{
@@ -74,7 +76,7 @@ export default function StoryCard ({ storySummaryForCard }: StoryCardProps) {
               <FcLikePlaceholder size={18} />
             </IconButton>
             <Typography variant='body2'>
-              {storySummaryForCard.likesCount || 0}
+              {storySummaryForCard.likesCount ?? 0}
             </Typography>
           </Stack>
 

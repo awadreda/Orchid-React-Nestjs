@@ -10,6 +10,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import {
   createStoryApi,
   getAllStoriesApi,
+  getStoriesSummaryApi,
   getStoriesSummaryByIdApi,
   getStoryByIdApi,
   updateStoryApi
@@ -52,7 +53,7 @@ export const getAllStoriesSlice = createAsyncThunk(`/allstories`, async () => {
 export const getStoriesSummarySlice = createAsyncThunk(
   `/storiessummary`,
   async () => {
-    const response = await getAllStoriesApi()
+    const response = await getStoriesSummaryApi()
     console.log('Response from slice:', response)
     return response as StorySummaryDto[]
     // return response
