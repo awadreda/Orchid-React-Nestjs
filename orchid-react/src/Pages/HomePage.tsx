@@ -29,10 +29,20 @@ import {
 } from "@mui/material";
 import SginInButton from "@/Components/Auth/SginInButton";
 import RigsterButton from "@/Components/Auth/RigsterButton";
+import { useEffect } from "react";
+import { preloadStoryList } from "@/Routes/Routes";
 
     
 
 export default function HomePage() {
+
+
+  useEffect(() => {
+    // Preload the story list component
+    preloadStoryList();
+  }, []);
+
+
   return (
     <Box
       sx={{
