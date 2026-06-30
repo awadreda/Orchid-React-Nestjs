@@ -13,12 +13,17 @@ import { FaComment } from 'react-icons/fa'
 
 import { FcLikePlaceholder } from 'react-icons/fc'
 import { Link, NavLink } from 'react-router'
+import { useState } from 'react'
 
 interface StoryCardProps {
   storySummaryForCard: StorySummaryDto
+  index:number
 }
 
-export default function StoryCard ({ storySummaryForCard }: StoryCardProps) {
+export default function StoryCard ({ storySummaryForCard ,index }: StoryCardProps) {
+
+
+  const [isLoaded, setIsLoaded] = useState(false)
 
   console.log('storySummaryForCard:', storySummaryForCard)
   return (
@@ -45,6 +50,13 @@ export default function StoryCard ({ storySummaryForCard }: StoryCardProps) {
           'https://www.noor-book.com/publice/covers_cache_webp/2/5/3/a/07eecd4c8753a956d7ea1997deb1254e.jpg.webp'
         }
         alt='غلاف القصة'
+
+        loading={index < 5 ? 'eager' : 'lazy'}
+        onLoad={() => setIsLoaded(true)}
+        sx={{
+          transition: 'opacity 0.5s ease-in-out',
+          opacity: isLoaded ? 1 : 0
+        }}
       />
 
       <CardContent sx={{ pb: 1 }}>

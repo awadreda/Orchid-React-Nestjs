@@ -1,10 +1,3 @@
-
-
-
-
-
-
-
 import { Box, Container, Typography } from '@mui/material'
 import { NavLink } from 'react-router'
 import StoryCard from './storyCard'
@@ -72,8 +65,19 @@ function StoryList () {
             justifyContent: 'center'
           }}
         >
-          {stories.map(story => (
-            <StoryCard key={story.id} storySummaryForCard={story} />
+          {stories.map((story, index) => (
+            <StoryCard
+              key={story.id}
+              storySummaryForCard={story}
+              index={index}
+            />
+          ))}
+          {stories.map((story, index = 5) => (
+            <StoryCard
+              key={story.id}
+              storySummaryForCard={story}
+              index={index}
+            />
           ))}
         </Box>
       </Container>
@@ -82,10 +86,6 @@ function StoryList () {
 }
 
 export default StoryList
-
-
-
-
 
 // import { useAppDispatch, useAppSelector } from '@/Redux/hooks'
 // import StoryCard from './storyCard'
